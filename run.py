@@ -15,7 +15,7 @@
 #-----------------------------------------------------------------------------
 import os
 import sys
-from bottle import run
+from bottle import run, ServerAdapter
 
 #-----------------------------------------------------------------------------
 # You may eventually wish to put these in their own directories and then load 
@@ -26,6 +26,27 @@ from bottle import run
 import model
 import view
 import controller
+
+class SSLCherootAdapter(ServerAdapter):
+    def run(self, handler):
+        from cheroot import wsgi
+        from cheroot.ssl.builtin import BuiltinSSLAdapter
+        import ssl
+
+        server = wsgi.Server((self.host, self.port), handler)
+        server.ssl_adapter = BuiltinSSLAdapter(
+            certificate="localhost.crt",
+            private_key="localhost.key")
+
+        # By default, the server will allow negotiations with extremely old protocols
+        # that are susceptible to attacks, so we only allow TLSv1.2
+        #server.ssl_adapter.context.options |= ssl.OP_NO_TLSv1
+        #server.ssl_adapter.context.options |= ssl.OP_NO_TLSv1_1
+
+        try:
+            server.start()
+        finally:
+            server.stop()
 
 #-----------------------------------------------------------------------------
 
@@ -44,8 +65,26 @@ def run_server():
         run_server
         Runs a bottle server
     '''
-    run(host=host, port=port, debug=debug)
 
+    run(
+        host=host,
+        port=port,
+        server='gunicorn',
+        debug=1,
+        keyfile='localhost.key',
+        certfile='localhost.crt'
+    )   
+    
+    
+    '''
+    run(
+        server='cheroot',
+        host=host,
+        port=port,
+        debug=debug,
+        certfile='secure_send.crt',
+        keyfile='secure_send.key')
+    '''
 #-----------------------------------------------------------------------------
 # Optional SQL support
 # Comment out the current manage_db function, and 
