@@ -89,12 +89,13 @@ def run_server():
 # Optional SQL support
 # Comment out the current manage_db function, and 
 # uncomment the following one to load an SQLite3 database
+import no_sql_db
 
 def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    pass
+    no_sql_db.database.create_table_entry("users", "id", "admin", "password")
 
 """
 import sql
