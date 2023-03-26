@@ -48,11 +48,16 @@ def login_check(username, password):
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
 
-    #Check if user is in database or not    
-    if no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
+    #Check if user is in database or not  
+    # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
+    if no_sql_db.database.search_table("users", "username", username) == None:
+        err_str = "User does not exist"
+        return page_view("invalid", reason=err_str)
+
+    elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
         return page_view("valid", name=username)
     
-    else: # Wrong user does not exist, or password is incorrect
+    elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
         err_str = "Incorrect Password"
         return page_view("invalid", reason=err_str)
 
@@ -98,6 +103,15 @@ def debug(cmd):
     except:
         pass
 
+#-----------------------------------------------------------------------------
+# Friends list
+#-----------------------------------------------------------------------------
+
+def friends_list(id):
+    #retrieve friends from database by user id
+
+    data = [["Jane"], ["Alex"], ["Mark"]]
+    result = page_view.render_list_as_table(data)
 
 #-----------------------------------------------------------------------------
 # 404

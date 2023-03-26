@@ -95,8 +95,8 @@ def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    no_sql_db.database.create_table_entry("users", "id", "a", "password")
-    no_sql_db.database.create_table_entry("users", "id", "b", "password")
+    no_sql_db.database.create_table_entry('users', ["id", "a", "passworda"])
+    no_sql_db.database.create_table_entry('users', ["id", "b", "passwordb"])
 
 """
 import sql
@@ -145,5 +145,5 @@ def run_commands(args):
             print("Command '{command}' not found".format(command=command))
 
 #-----------------------------------------------------------------------------
-
+manage_db()
 run_commands(sys.argv)

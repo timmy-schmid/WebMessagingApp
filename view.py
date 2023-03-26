@@ -114,3 +114,18 @@ class View():
             :: template :: The template to use
         '''
         return self.simple_render(template, **self.global_renders)
+    
+
+    #for displaying friend list?
+    # table would go inside the body
+    def render_list_as_table(self, data):
+        rendered_html = "<table>"
+        for row in data:
+            rendered_html += "<tr>"
+            for col in row:
+                rendered_html += "<td>" + str(col) + "</td>"
+            rendered_html += "</tr>"
+        rendered_html += "</table>"
+        
+        return rendered_html
+
