@@ -95,7 +95,8 @@ def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    no_sql_db.database.create_table_entry("users", "id", "admin", "password")
+    no_sql_db.database.create_table_entry("users", "id", "a", "password")
+    no_sql_db.database.create_table_entry("users", "id", "b", "password")
 
 """
 import sql
