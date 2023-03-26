@@ -1,6 +1,16 @@
 
 ## Notes ##
 
+### Progress Alannah 26/03 ###
+Hey Tim, after failing to get my computer to trust the certificate last night, I just quickly did some very basic database setup on the new "users" branch which we can merge in when more progress has been made. I setup the very basic database found in their "no_sql_db.py" to play around with getting that working. I haven't used SQL before, but if you have I'm more than happy to transfer that over to the SQL database. Anyway, you can now login as either user a or b which have very secure user info (not):
+  username: a
+  password: password
+  
+  username: b
+  password: password
+ 
+ I guess the next step here would be storing the passwords properly/safely.
+
 ### Progress Tim 24/03 ###
 
 Hi Alannah, here's what I got up to last night:
