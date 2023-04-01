@@ -118,6 +118,18 @@ def get_about():
     return model.about()
 #-----------------------------------------------------------------------------
 
+#-----------------------------------------------------------------------------
+
+@get('/friends')
+def get_friends():
+    '''
+        get_friends
+        
+        Serves the friends page
+    '''
+    return model.friends_list()
+#-----------------------------------------------------------------------------
+
 # Help with debugging
 @post('/debug/<cmd:path>')
 def post_debug(cmd):

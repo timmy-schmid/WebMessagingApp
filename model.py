@@ -107,11 +107,12 @@ def debug(cmd):
 # Friends list
 #-----------------------------------------------------------------------------
 
-def friends_list(id):
+def friends_list():
     #retrieve friends from database by user id
 
     data = [["Jane"], ["Alex"], ["Mark"]]
     result = page_view.render_list_as_table(data)
+    return page_view("friends", friends_html_table=result)
 
 #-----------------------------------------------------------------------------
 # 404
