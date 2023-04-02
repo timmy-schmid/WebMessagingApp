@@ -25,7 +25,7 @@ def index():
     return page_view("index")
 
 #-----------------------------------------------------------------------------
-# Login
+# Create User
 #-----------------------------------------------------------------------------
 
 def create_user_form():
@@ -35,7 +35,7 @@ def create_user_form():
     '''
     return page_view("create_user")
 
-# Check the login credentials
+# Check the user credentials
 def create_user(username, password):
     '''
         Create_user
@@ -48,12 +48,14 @@ def create_user(username, password):
     '''
     if no_sql_db.database.search_table("users", "username", username) != None and no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
         err_str = "User already exists. You have been logged in " + username + "!"
-        return page_view("invalid_create_user", reason=err_str)
+        return page_view.load_and_render("invalid_create_user", header="login_header", tailer="tailer", reason=err_str)
+        #return page_view("invalid_create_user", reason=err_str)
 
     else:
         no_sql_db.database.create_table_entry('users', ["id", username, password])
         current_user = no_sql_db.database.search_table("users", "username", username)
-        return page_view("valid_create_user", name=username)
+        return page_view.load_and_render("valid_create_user", header="login_header", tailer="tailer", name=username)
+        #return page_view("valid_create_user", name=username)
 
 
 #-----------------------------------------------------------------------------
@@ -89,7 +91,8 @@ def login_check(username, password):
 
     elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
         current_user = no_sql_db.database.search_table("users", "username", username)
-        return page_view("valid_login", name=username)
+        return page_view.load_and_render("valid_login", header="login_header", tailer="tailer", name=username)
+        #return page_view("valid_login", name=username)
     
     elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
         err_str = "Incorrect Password"
@@ -98,7 +101,27 @@ def login_check(username, password):
     # By default assume good creds
     #login = False
      
-        
+#-----------------------------------------------------------------------------
+# Logout
+#-----------------------------------------------------------------------------
+
+def logout_button():
+    '''
+        logout
+        Returns the view for the logout_button
+    '''
+    return page_view("logout")
+
+# Check the login credentials
+def logout_check():
+    '''
+        logout_check
+        Checks user has been logged out
+
+    '''
+
+    return page_view("valid_logout")
+
 #-----------------------------------------------------------------------------
 # About
 #-----------------------------------------------------------------------------

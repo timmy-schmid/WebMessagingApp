@@ -87,7 +87,7 @@ def get_create_user_controller():
 
 #-----------------------------------------------------------------------------
 
-# Attempt the login
+# Attempt to create user
 @post('/create_user')
 def post_create_user():
     '''
@@ -134,6 +134,30 @@ def post_login():
     return model.login_check(username, password)
 
 
+# Display the login page
+@get('/logout')
+def get_logout_controller():
+    '''
+        get_login
+        
+        Serves the login page
+    '''
+    return model.logout_button()
+
+# Attempt the logout
+@post('/logout')
+def post_logout():
+    '''
+        post_logout
+        
+        Handles logout attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+    
+    # Call the appropriate method
+    return model.logout_check()
+
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 
