@@ -55,7 +55,8 @@ class SSLCherootAdapter(ServerAdapter):
 host = 'localhost'
 
 # Test port, change to the appropriate port to host
-port = 8081
+# !! change back to 8081
+port = 8080
 
 # Turn this off for production
 debug = True
@@ -74,17 +75,7 @@ def run_server():
         keyfile='localhost.key',
         certfile='localhost.crt'
     )  
-    
-    
-    '''
-    run(
-        server='cheroot',
-        host=host,
-        port=port,
-        debug=debug,
-        certfile='secure_send.crt',
-        keyfile='secure_send.key')
-    '''
+
 #-----------------------------------------------------------------------------
 # Optional SQL support
 # Comment out the current manage_db function, and 
@@ -95,8 +86,8 @@ def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    no_sql_db.database.create_table_entry('users', ["id", "a", "passworda"])
-    no_sql_db.database.create_table_entry('users', ["id", "b", "passwordb"])
+    #no_sql_db.database.create_table_entry('users', ["id", "a", "passworda"])
+    #no_sql_db.database.create_table_entry('users', ["id", "b", "passwordb"])
 
 """
 import sql

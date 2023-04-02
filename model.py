@@ -27,6 +27,48 @@ def index():
 # Login
 #-----------------------------------------------------------------------------
 
+def create_user_form():
+    '''
+        create_user_form
+        Returns the view for the create_user_form
+    '''
+    return page_view("create_user")
+
+# Check the login credentials
+def create_user(username, password):
+    '''
+        login_check
+        Checks usernames and passwords
+
+        :: username :: The username
+        :: password :: The password
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+
+    no_sql_db.database.create_table_entry('users', ["id", username, password])
+    return page_view("valid_create_user", name=username)
+
+    #Check if user is in database or not  
+    # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
+    """if no_sql_db.database.search_table("users", "username", username) == None:
+        err_str = "User does not exist"
+        return page_view("invalid", reason=err_str)
+
+    elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
+        return page_view("valid", name=username)
+    
+    elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
+        err_str = "Incorrect Password"
+        return page_view("invalid", reason=err_str)"""
+
+    # By default assume good creds
+    #login = False
+
+#-----------------------------------------------------------------------------
+# Login
+#-----------------------------------------------------------------------------
+
 def login_form():
     '''
         login_form
@@ -51,11 +93,11 @@ def login_check(username, password):
     #Check if user is in database or not  
     # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
     if no_sql_db.database.search_table("users", "username", username) == None:
-        err_str = "User does not exist"
+        err_str = "User does not exist. Please create user first."
         return page_view("invalid", reason=err_str)
 
     elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
-        return page_view("valid", name=username)
+        return page_view("valid_login", name=username)
     
     elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
         err_str = "Incorrect Password"

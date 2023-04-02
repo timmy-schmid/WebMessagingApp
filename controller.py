@@ -76,6 +76,35 @@ def get_index():
 #-----------------------------------------------------------------------------
 
 # Display the login page
+@get('/create_user')
+def get_create_user_controller():
+    '''
+        get_create_user
+        
+        Serves the login page
+    '''
+    return model.create_user_form()
+
+#-----------------------------------------------------------------------------
+
+# Attempt the login
+@post('/create_user')
+def post_create_user():
+    '''
+        post_create_user
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    
+    # Call the appropriate method
+    return model.create_user(username, password)
+
+# Display the login page
 @get('/login')
 def get_login_controller():
     '''
