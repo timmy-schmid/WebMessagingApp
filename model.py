@@ -11,6 +11,7 @@ import no_sql_db
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
+current_user = []
 
 #-----------------------------------------------------------------------------
 # Index
@@ -37,7 +38,7 @@ def create_user_form():
 # Check the login credentials
 def create_user(username, password):
     '''
-        login_check
+        Create_user
         Checks usernames and passwords
 
         :: username :: The username
@@ -45,25 +46,15 @@ def create_user(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
+    if no_sql_db.database.search_table("users", "username", username) != None and no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
+        err_str = "User already exists. You have been logged in " + username + "!"
+        return page_view("invalid_create_user", reason=err_str)
 
-    no_sql_db.database.create_table_entry('users', ["id", username, password])
-    return page_view("valid_create_user", name=username)
+    else:
+        no_sql_db.database.create_table_entry('users', ["id", username, password])
+        current_user = no_sql_db.database.search_table("users", "username", username)
+        return page_view("valid_create_user", name=username)
 
-    #Check if user is in database or not  
-    # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
-    """if no_sql_db.database.search_table("users", "username", username) == None:
-        err_str = "User does not exist"
-        return page_view("invalid", reason=err_str)
-
-    elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
-        return page_view("valid", name=username)
-    
-    elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
-        err_str = "Incorrect Password"
-        return page_view("invalid", reason=err_str)"""
-
-    # By default assume good creds
-    #login = False
 
 #-----------------------------------------------------------------------------
 # Login
@@ -94,14 +85,15 @@ def login_check(username, password):
     # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
     if no_sql_db.database.search_table("users", "username", username) == None:
         err_str = "User does not exist. Please create user first."
-        return page_view("invalid", reason=err_str)
+        return page_view("invalid_login", reason=err_str)
 
     elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
+        current_user = no_sql_db.database.search_table("users", "username", username)
         return page_view("valid_login", name=username)
     
     elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
         err_str = "Incorrect Password"
-        return page_view("invalid", reason=err_str)
+        return page_view("invalid_login", reason=err_str)
 
     # By default assume good creds
     #login = False
