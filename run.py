@@ -55,7 +55,6 @@ class SSLCherootAdapter(ServerAdapter):
 host = 'localhost'
 
 # Test port, change to the appropriate port to host
-# !! change back to 8081
 port = 8080
 
 # Turn this off for production
@@ -86,8 +85,6 @@ def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    #no_sql_db.database.create_table_entry('users', ["id", "a", "passworda"])
-    #no_sql_db.database.create_table_entry('users', ["id", "b", "passwordb"])
 
 """
 import sql

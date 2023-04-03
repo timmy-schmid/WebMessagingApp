@@ -62,7 +62,7 @@ def serve_js(js):
 # Pages
 #-----------------------------------------------------------------------------
 
-# Redirect to login
+# Redirect to index
 @get('/')
 @get('/home')
 def get_index():
@@ -75,7 +75,7 @@ def get_index():
 
 #-----------------------------------------------------------------------------
 
-# Display the login page
+# Display the create user page
 @get('/create_user')
 def get_create_user_controller():
     '''
@@ -84,8 +84,6 @@ def get_create_user_controller():
         Serves the login page
     '''
     return model.create_user_form()
-
-#-----------------------------------------------------------------------------
 
 # Attempt to create user
 @post('/create_user')
@@ -103,6 +101,8 @@ def post_create_user():
     
     # Call the appropriate method
     return model.create_user(username, password)
+
+#-----------------------------------------------------------------------------
 
 # Display the login page
 @get('/login')
@@ -134,7 +134,8 @@ def post_login():
     return model.login_check(username, password)
 
 
-# Display the login page
+#-----------------------------------------------------------------------------
+# Display the logout page
 @get('/logout')
 def get_logout_controller():
     '''

@@ -53,14 +53,12 @@ def create_user(username, password):
         err_str = "User already exists. You have been logged in " + username + "!"
         header_switch = "login_header"
         return page_view.load_and_render("invalid_create_user", header=header_switch, reason=err_str)
-        #return page_view("invalid_create_user", reason=err_str)
 
     else:
         no_sql_db.database.create_table_entry('users', ["id", username, password])
         current_user = no_sql_db.database.search_table("users", "username", username)
         header_switch = "login_header"
         return page_view.load_and_render("valid_create_user", header=header_switch, name=username)
-        #return page_view("valid_create_user", name=username)
 
 
 #-----------------------------------------------------------------------------
@@ -99,7 +97,6 @@ def login_check(username, password):
         current_user = no_sql_db.database.search_table("users", "username", username)
         header_switch = "login_header"
         return page_view.load_and_render("valid_login", header=header_switch, name=username)
-        #return page_view("valid_login", name=username)
     
     elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
         err_str = "Incorrect Password"
