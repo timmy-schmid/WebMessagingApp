@@ -55,7 +55,7 @@ class SSLCherootAdapter(ServerAdapter):
 host = 'localhost'
 
 # Test port, change to the appropriate port to host
-port = 8081
+port = 8080
 
 # Turn this off for production
 debug = True
@@ -71,8 +71,8 @@ def run_server():
         port=port,
         server='gunicorn',
         debug=1,
-        keyfile='localhost.key',
-        certfile='localhost.crt'
+        keyfile='key.pem',
+        certfile='cert.pem'
     )  
     
     
