@@ -51,7 +51,7 @@ def create_user(username, password):
     '''
     global header_switch 
 
-    #salt and hash the password
+    # Salt and hash the password
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
 
@@ -93,18 +93,22 @@ def login_check(username, password):
     '''
     global header_switch 
 
+    # Find the old salt and hash the new password
+    salt = no_sql_db.database.search_table_for_value("users", "username", username, 3)
+    new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
     #Check if user is in database or not  
     # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
     if no_sql_db.database.search_table_for_entry("users", "username", username) == None:
         err_str = "User does not exist. Please create user first."
         return page_view("invalid_login", header=header_switch, reason=err_str)
 
-    elif no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", password):
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", new_key):
         current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
         header_switch = "login_header"
         return page_view.load_and_render("valid_login", header=header_switch, name=username)
     
-    elif no_sql_db.database.search_table_for_entry("users", "username", username) != no_sql_db.database.search_table_for_entry("users", "password", password):
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) != no_sql_db.database.search_table_for_entry("users", "password", new_key):
         err_str = "Incorrect Password"
         return page_view("invalid_login", header=header_switch, reason=err_str)
 

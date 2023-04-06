@@ -41,7 +41,7 @@ class Table():
         # Nothing Found
         return None
     
-    def search_table_for_value(self, target_field_name, target_value):
+    def search_table_for_value(self, target_field_name, target_value, index):
         '''
             Search the table given a field name and a target value
             Returns the first entry found that matches
@@ -50,7 +50,7 @@ class Table():
         for entry in self.entries:
             for field_name, value in zip(self.fields, entry):
                 if target_field_name == field_name and target_value == value:
-                    return value
+                    return entry[index]
 
         # Nothing Found
         return None
@@ -86,11 +86,11 @@ class DB():
         '''
         return self.tables[table_name].search_table_for_entry(target_field_name, target_value)
     
-    def search_table_for_value(self, table_name, target_field_name, target_value):
+    def search_table_for_value(self, table_name, target_field_name, target_value, index):
         '''
             Calls the search table method on an appropriate table
         '''
-        return self.tables[table_name].search_table_for_value(target_field_name, target_value)
+        return self.tables[table_name].search_table_for_value(target_field_name, target_value, index)
 
     def create_table_entry(self, table_name, data):
         '''
