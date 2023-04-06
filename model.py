@@ -8,6 +8,8 @@
 import view
 import random
 import no_sql_db
+import hashlib
+import os
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
@@ -49,14 +51,18 @@ def create_user(username, password):
     '''
     global header_switch 
 
-    if no_sql_db.database.search_table("users", "username", username) != None and no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
+    #salt and hash the password
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    if no_sql_db.database.search_table_for_entry("users", "username", username) != None and no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", key):
         err_str = "User already exists. You have been logged in " + username + "!"
         header_switch = "login_header"
         return page_view.load_and_render("invalid_create_user", header=header_switch, reason=err_str)
 
     else:
-        no_sql_db.database.create_table_entry('users', ["id", username, password])
-        current_user = no_sql_db.database.search_table("users", "username", username)
+        no_sql_db.database.create_table_entry('users', ["id", username, key, salt])
+        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
         header_switch = "login_header"
         return page_view.load_and_render("valid_create_user", header=header_switch, name=username)
 
@@ -89,16 +95,16 @@ def login_check(username, password):
 
     #Check if user is in database or not  
     # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
-    if no_sql_db.database.search_table("users", "username", username) == None:
+    if no_sql_db.database.search_table_for_entry("users", "username", username) == None:
         err_str = "User does not exist. Please create user first."
         return page_view("invalid_login", header=header_switch, reason=err_str)
 
-    elif no_sql_db.database.search_table("users", "username", username) == no_sql_db.database.search_table("users", "password", password):
-        current_user = no_sql_db.database.search_table("users", "username", username)
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", password):
+        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
         header_switch = "login_header"
         return page_view.load_and_render("valid_login", header=header_switch, name=username)
     
-    elif no_sql_db.database.search_table("users", "username", username) != no_sql_db.database.search_table("users", "password", password):
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) != no_sql_db.database.search_table_for_entry("users", "password", password):
         err_str = "Incorrect Password"
         return page_view("invalid_login", header=header_switch, reason=err_str)
 

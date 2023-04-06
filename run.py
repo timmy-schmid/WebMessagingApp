@@ -55,7 +55,7 @@ class SSLCherootAdapter(ServerAdapter):
 host = 'localhost'
 
 # Test port, change to the appropriate port to host
-port = 8081
+port = 8080
 
 # Turn this off for production
 debug = True
