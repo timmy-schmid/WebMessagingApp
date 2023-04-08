@@ -7,9 +7,14 @@
 '''
 import view
 import random
+import no_sql_db
+import hashlib
+import os
 
 # Initialise our views, all arguments are defaults for the template
 page_view = view.View()
+current_user = []
+header_switch = "header"
 
 #-----------------------------------------------------------------------------
 # Index
@@ -20,7 +25,47 @@ def index():
         index
         Returns the view for the index
     '''
-    return page_view("index")
+    return page_view("index", header=header_switch)
+
+#-----------------------------------------------------------------------------
+# Create User
+#-----------------------------------------------------------------------------
+
+def create_user_form():
+    '''
+        create_user_form
+        Returns the view for the create_user_form
+    '''
+    return page_view("create_user", header=header_switch)
+
+# Check the user credentials
+def create_user(username, password):
+    '''
+        Create_user
+        Checks usernames and passwords
+
+        :: username :: The username
+        :: password :: The password
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    global header_switch 
+
+    # Salt and hash the password
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    if no_sql_db.database.search_table_for_entry("users", "username", username) != None and no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", key):
+        err_str = "User already exists. You have been logged in " + username + "!"
+        header_switch = "login_header"
+        return page_view.load_and_render("invalid_create_user", header=header_switch, reason=err_str)
+
+    else:
+        no_sql_db.database.create_table_entry('users', ["id", username, key, salt])
+        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+        header_switch = "login_header"
+        return page_view.load_and_render("valid_create_user", header=header_switch, name=username)
+
 
 #-----------------------------------------------------------------------------
 # Login
@@ -46,22 +91,52 @@ def login_check(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
+    global header_switch 
+
+    # Find the old salt and hash the new password
+    salt = no_sql_db.database.search_table_for_value("users", "username", username, 3)
+    new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+
+    #Check if user is in database or not  
+    # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
+    if no_sql_db.database.search_table_for_entry("users", "username", username) == None:
+        err_str = "User does not exist. Please create user first."
+        return page_view("invalid_login", header=header_switch, reason=err_str)
+
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", new_key):
+        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+        header_switch = "login_header"
+        return page_view.load_and_render("valid_login", header=header_switch, name=username)
+    
+    elif no_sql_db.database.search_table_for_entry("users", "username", username) != no_sql_db.database.search_table_for_entry("users", "password", new_key):
+        err_str = "Incorrect Password"
+        return page_view("invalid_login", header=header_switch, reason=err_str)
 
     # By default assume good creds
-    login = True
-    
-    if username != "admin": # Wrong Username
-        err_str = "Incorrect Username"
-        login = False
-    
-    if password != "password": # Wrong password
-        err_str = "Incorrect Password"
-        login = False
-        
-    if login: 
-        return page_view("valid", name=username)
-    else:
-        return page_view("invalid", reason=err_str)
+    #login = False
+     
+#-----------------------------------------------------------------------------
+# Logout
+#-----------------------------------------------------------------------------
+
+def logout_button():
+    '''
+        logout
+        Returns the view for the logout_button
+    '''
+    return page_view("logout", header=header_switch)
+
+# Check the login credentials
+def logout_check():
+    '''
+        logout_check
+        Checks user has been logged out
+
+    '''
+    global header_switch 
+    header_switch = "header"
+
+    return page_view("valid_logout", header=header_switch)
 
 #-----------------------------------------------------------------------------
 # About
@@ -72,8 +147,7 @@ def about():
         about
         Returns the view for the about page
     '''
-    return page_view("about", garble=about_garble())
-
+    return page_view("about", header=header_switch, garble=about_garble())
 
 
 # Returns a random string each time
@@ -101,6 +175,16 @@ def debug(cmd):
     except:
         pass
 
+#-----------------------------------------------------------------------------
+# Friends list
+#-----------------------------------------------------------------------------
+
+def friends_list():
+    #retrieve friends from database by user id
+
+    data = [["Jane"], ["Alex"], ["Mark"]]
+    result = page_view.render_list_as_table(data)
+    return page_view("friends", header=header_switch, friends_html_table=result)
 
 #-----------------------------------------------------------------------------
 # 404

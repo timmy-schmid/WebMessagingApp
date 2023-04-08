@@ -55,7 +55,7 @@ class SSLCherootAdapter(ServerAdapter):
 host = 'localhost'
 
 # Test port, change to the appropriate port to host
-port = 8081
+port = 8080
 
 # Turn this off for production
 debug = True
@@ -73,28 +73,18 @@ def run_server():
         debug=1,
         keyfile='localhost.key',
         certfile='localhost.crt'
-    )   
-    
-    
-    '''
-    run(
-        server='cheroot',
-        host=host,
-        port=port,
-        debug=debug,
-        certfile='secure_send.crt',
-        keyfile='secure_send.key')
-    '''
+    )  
+
 #-----------------------------------------------------------------------------
 # Optional SQL support
 # Comment out the current manage_db function, and 
 # uncomment the following one to load an SQLite3 database
+import no_sql_db
 
 def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    pass
 
 """
 import sql
@@ -143,5 +133,5 @@ def run_commands(args):
             print("Command '{command}' not found".format(command=command))
 
 #-----------------------------------------------------------------------------
-
+manage_db()
 run_commands(sys.argv)
