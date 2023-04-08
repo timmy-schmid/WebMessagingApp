@@ -1,6 +1,24 @@
 
 ## Notes ##
 
+### Progress Alannah 3/04 ##
+I got the certificate to be trusted!
+
+I saw something on Ed about including the IP in the certificate [this] (https://edstem.org/au/courses/10797/discussion/1267056) and the looked it up and found [this](https://medium.com/@antelle/how-to-generate-a-self-signed-ssl-certificate-for-an-ip-address-f0dd8dddf754). I followed it and it worked! I also added the certificate to my keychain and made it trust it, which I think you will have to do too. 
+
+The new certificate is in the 'trust_certificate' branch so if you run the server from there it should work. If it does then we can merge the branch into main, but if it doesn't we can trouble shoot more.
+
+
+### Progress Alannah 26/03 ###
+Hey Tim, after failing to get my computer to trust the certificate last night, I just quickly did some very basic database setup on the new "users" branch which we can merge in when more progress has been made. I setup the very basic database found in their "no_sql_db.py" to play around with getting that working. I haven't used SQL before, but if you have I'm more than happy to transfer that over to the SQL database. Anyway, you can now login as either user a or b which have very secure user info (not):
+  username: a
+  password: password
+  
+  username: b
+  password: password
+ 
+ I guess the next step here would be storing the passwords properly/safely.
+
 ### Progress Tim 24/03 ###
 
 Hi Alannah, here's what I got up to last night:

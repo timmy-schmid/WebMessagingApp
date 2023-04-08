@@ -74,17 +74,7 @@ def run_server():
         keyfile='key.pem',
         certfile='cert.pem'
     )  
-    
-    
-    '''
-    run(
-        server='cheroot',
-        host=host,
-        port=port,
-        debug=debug,
-        certfile='secure_send.crt',
-        keyfile='secure_send.key')
-    '''
+
 #-----------------------------------------------------------------------------
 # Optional SQL support
 # Comment out the current manage_db function, and 
@@ -95,7 +85,6 @@ def manage_db():
     '''
         Blank function for database support, use as needed
     '''
-    no_sql_db.database.create_table_entry("users", "id", "admin", "password")
 
 """
 import sql
@@ -144,5 +133,5 @@ def run_commands(args):
             print("Command '{command}' not found".format(command=command))
 
 #-----------------------------------------------------------------------------
-
+manage_db()
 run_commands(sys.argv)

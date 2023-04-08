@@ -62,7 +62,7 @@ def serve_js(js):
 # Pages
 #-----------------------------------------------------------------------------
 
-# Redirect to login
+# Redirect to index
 @get('/')
 @get('/home')
 def get_index():
@@ -72,6 +72,35 @@ def get_index():
         Serves the index page
     '''
     return model.index()
+
+#-----------------------------------------------------------------------------
+
+# Display the create user page
+@get('/create_user')
+def get_create_user_controller():
+    '''
+        get_create_user
+        
+        Serves the login page
+    '''
+    return model.create_user_form()
+
+# Attempt to create user
+@post('/create_user')
+def post_create_user():
+    '''
+        post_create_user
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    
+    # Call the appropriate method
+    return model.create_user(username, password)
 
 #-----------------------------------------------------------------------------
 
@@ -105,6 +134,31 @@ def post_login():
     return model.login_check(username, password)
 
 
+#-----------------------------------------------------------------------------
+# Display the logout page
+@get('/logout')
+def get_logout_controller():
+    '''
+        get_login
+        
+        Serves the login page
+    '''
+    return model.logout_button()
+
+# Attempt the logout
+@post('/logout')
+def post_logout():
+    '''
+        post_logout
+        
+        Handles logout attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+    
+    # Call the appropriate method
+    return model.logout_check()
+
+#-----------------------------------------------------------------------------
 
 #-----------------------------------------------------------------------------
 
@@ -116,6 +170,18 @@ def get_about():
         Serves the about page
     '''
     return model.about()
+#-----------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------
+
+@get('/friends')
+def get_friends():
+    '''
+        get_friends
+        
+        Serves the friends page
+    '''
+    return model.friends_list()
 #-----------------------------------------------------------------------------
 
 # Help with debugging
