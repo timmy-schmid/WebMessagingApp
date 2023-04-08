@@ -71,8 +71,8 @@ def run_server():
         port=port,
         server='gunicorn',
         debug=1,
-        keyfile='localhost.key',
-        certfile='localhost.crt'
+        keyfile='key.pem',
+        certfile='cert.pem'
     )  
 
 #-----------------------------------------------------------------------------
