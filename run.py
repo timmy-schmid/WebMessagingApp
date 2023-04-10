@@ -35,8 +35,8 @@ class SSLCherootAdapter(ServerAdapter):
 
         server = wsgi.Server((self.host, self.port), handler)
         server.ssl_adapter = BuiltinSSLAdapter(
-            certificate="localhost.crt",
-            private_key="localhost.key")
+            certificate="cert.pem",
+            private_key="key.pem")
 
         # By default, the server will allow negotiations with extremely old protocols
         # that are susceptible to attacks, so we only allow TLSv1.2
