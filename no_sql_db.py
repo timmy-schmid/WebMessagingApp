@@ -54,6 +54,10 @@ class Table():
 
         # Nothing Found
         return None
+    
+    def select_all_table_values(self,target_field_name):
+        return [[val[self.fields.index(target_field_name)]] for val in self.entries]
+        
 
 
 class DB():
@@ -86,6 +90,10 @@ class DB():
         '''
         return self.tables[table_name].search_table_for_entry(target_field_name, target_value)
     
+    def select_all_table_values(self, table_name,target_field_name):
+        return self.tables[table_name].select_all_table_values(target_field_name)
+
+
     def search_table_for_value(self, table_name, target_field_name, target_value, index):
         '''
             Calls the search table method on an appropriate table

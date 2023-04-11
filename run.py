@@ -47,7 +47,7 @@ class SSLCherootAdapter(ServerAdapter):
             server.start()
         finally:
             server.stop()
-
+ 
 #-----------------------------------------------------------------------------
 
 # It might be a good idea to move the following settings to a config file and then load them

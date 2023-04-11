@@ -182,7 +182,16 @@ def debug(cmd):
 def friends_list():
     #retrieve friends from database by user id
 
-    data = [["Jane"], ["Alex"], ["Mark"]]
+
+
+    data = no_sql_db.database.select_all_table_values("users","username")
+
+
+    #return page_view.load_and_render("valid_login", header=header_switch, name=username)
+
+    print(data)
+    #data = [["Jane"], ["Alex"], ["Mark"]]
+
     result = page_view.render_list_as_table(data)
     return page_view("friends", header=header_switch, friends_html_table=result)
 
