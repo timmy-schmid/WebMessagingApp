@@ -1,6 +1,27 @@
 
 ## Notes ##
 
+### Progress Tim 12/04 ##
+
+Hi Allanah. I had a big day of research and working on our code with many ups and downs. Here's a summary of what I achieved and learnts.
+
+- Sockets: Today I found out there is a big difference between [sockets and WebSockets](https://stackoverflow.com/questions/4973622/difference-between-socket-and-websocket), most Python web frameworks have a way of implementing them and this usually involves [Socket.io](https://socket.io/). I decided to stick with the current template over migrating to Winston's that uses Flask. Bottle is more than capable of implementing WebSockets and I found some tutorials/example projects to help me achieve this through the Socket.io library [Here is one](https://github.com/miguelgrinberg/python-socketio/blob/main/examples/server/wsgi/app.py). Python . You will need to use the command `pip install python-socketio` to get this to work. The official socket.io python api documentation can be found [here](https://python-socketio.readthedocs.io/en/latest/server.html#deployment-strategies)
+
+- Bottle: I decided to skim through the bottle documentation to get a good understanding to what is capable including using web cookies (discussed later), I found the [official documentation](https://bottlepy.org/docs/stable/tutorial.html#) extremely useful
+
+- Views: The current way that views in our project was setup was to render using python String Templates, I found this quite restrictive and it results in many .html files. I was planning to change this to Jinja2, however I realised Bottle has a built in rendering engine called [SimpleTemplate](https://bottlepy.org/docs/dev/stpl.html#bottle.SimpleTemplate). What this allows us to do is to use pythonic code directly in our html files, and in turn lets us create dynamic pages/views. I've flattened all our templates into just a couple of files now using if statements to determine what to display based on the user's login status.
+
+-Sessions: A big thing that I was trying to figure out is how we know if a user is 'logged in' or not. Yes, we were doing the authentication of the user against our temporal database however after this (or before this) we didn't do any checks. This meant that we could access any of the pages just by typing the URL's in directly which was not great from a security perspective. I also needed to figure out a way to how to determine a chat window unique to that user. I found that typically a *session* is generated between the server and the client and is typically stored via web cookies. I got a bit lost on how to do this so I looked up the Bottle documentation and found [this video](https://www.youtube.com/watch?v=l66XCSaeTys). Essentially a unique uid code is created when a user logs in which is added to a sessions dictionary on the server side. The server then checks to see if a clients cookie matches an active session whenever it accesses parts of the website. This is done in the model function `get_session_username()`.
+
+-Create User, Login: I refactored these a bit and fixed some logic errors. I also added some basic checks like if the create user form was being submitted with blank data, if the password is the same as the username etc.
+
+-Friends and Chat: I changed friends to only display all users, except the current one logged in. I also added links to each friend which includes GET information (in the URL) about the friend. I've implemented a basic chat window for now. I know that we decided that you would do this, but after revisiting I believe it was necessary to get this setup for sockets to work.
+
+Tomorrow I'm going to tackle implementing secure sockets. I actually believe this shoudn't take to long now since I have a good idea of what needs to be done. There's a few video's [here](https://www.youtube.com/watch?v=U_Q1vqaJi34)
+[here](https://www.youtube.com/watch?v=whEObh8waxg) that I've skimmed through. There's also Winston's template to look through as he also uses Socket.IO. Feel free to also have a go at this.
+
+In terms of other things that can be done there's a few things I've listed in the worddoc that we could still implement to help us strenghten the other sections of the project. I.e. it would be good to implement some type of regex to require a user to enter certain charcters for the password. Also it could be good to maybe try to have a limit on the number of attempts a user can incorrectly enter a password before it locks them out.
+
 ### Progress Alannah 3/04 ##
 I got the certificate to be trusted!
 
