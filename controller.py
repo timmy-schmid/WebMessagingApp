@@ -4,16 +4,21 @@
     maybe some simple program logic
 '''
 
-from bottle import route, get, post, error, request, static_file
-
+from bottle import Bottle, route, get, post, error, request, static_file
 import model
+import socketio
+
+#socket setup
+server = Bottle()
+sio = socketio.Server(logger=True, async_mode=None)
+server.wsgi = socketio.WSGIApp(sio, server.wsgi)
 
 #-----------------------------------------------------------------------------
 # Static file paths
 #-----------------------------------------------------------------------------
 
 # Allow image loading
-@route('/img/<picture:path>')
+@server.route('/img/<picture:path>')
 def serve_pictures(picture):
     '''
         serve_pictures
@@ -26,10 +31,8 @@ def serve_pictures(picture):
     '''
     return static_file(picture, root='static/img/')
 
-#-----------------------------------------------------------------------------
-
 # Allow CSS
-@route('/css/<css:path>')
+@server.route('/css/<css:path>')
 def serve_css(css):
     '''
         serve_css
@@ -42,10 +45,8 @@ def serve_css(css):
     '''
     return static_file(css, root='static/css/')
 
-#-----------------------------------------------------------------------------
-
 # Allow javascript
-@route('/js/<js:path>')
+@server.route('/js/<js:path>')
 def serve_js(js):
     '''
         serve_js
@@ -63,20 +64,19 @@ def serve_js(js):
 #-----------------------------------------------------------------------------
 
 # Redirect to index
-@get('/')
-@get('/home')
+@server.get('/')
+@server.get('/home')
 def get_index():
     '''
         get_index
         
         Serves the index page
     '''
+
     return model.index()
 
-#-----------------------------------------------------------------------------
-
 # Display the create user page
-@get('/create_user')
+@server.get('/create_user')
 def get_create_user_controller():
     '''
         get_create_user
@@ -86,7 +86,7 @@ def get_create_user_controller():
     return model.create_user_form()
 
 # Attempt to create user
-@post('/create_user')
+@server.post('/create_user')
 def post_create_user():
     '''
         post_create_user
@@ -102,10 +102,17 @@ def post_create_user():
     # Call the appropriate method
     return model.create_user(username, password)
 
-#-----------------------------------------------------------------------------
-
 # Display the login page
-@get('/login')
+
+@server.get('/chat')
+def get_chat():
+
+    friend = request.query.get('friend')
+
+    return model.chat(friend)
+
+
+@server.get('/login')
 def get_login_controller():
     '''
         get_login
@@ -114,10 +121,8 @@ def get_login_controller():
     '''
     return model.login_form()
 
-#-----------------------------------------------------------------------------
-
 # Attempt the login
-@post('/login')
+@server.post('/login')
 def post_login():
     '''
         post_login
@@ -133,10 +138,8 @@ def post_login():
     # Call the appropriate method
     return model.login_check(username, password)
 
-
-#-----------------------------------------------------------------------------
 # Display the logout page
-@get('/logout')
+@server.get('/logout')
 def get_logout_controller():
     '''
         get_login
@@ -146,23 +149,18 @@ def get_logout_controller():
     return model.logout_button()
 
 # Attempt the logout
-@post('/logout')
+@server.post('/logout')
 def post_logout():
     '''
         post_logout
         
         Handles logout attempts
-        Expects a form containing 'username' and 'password' fields
     '''
     
     # Call the appropriate method
     return model.logout_check()
 
-#-----------------------------------------------------------------------------
-
-#-----------------------------------------------------------------------------
-
-@get('/about')
+@server.get('/about')
 def get_about():
     '''
         get_about
@@ -170,11 +168,8 @@ def get_about():
         Serves the about page
     '''
     return model.about()
-#-----------------------------------------------------------------------------
 
-#-----------------------------------------------------------------------------
-
-@get('/friends')
+@server.get('/friends')
 def get_friends():
     '''
         get_friends
@@ -182,16 +177,13 @@ def get_friends():
         Serves the friends page
     '''
     return model.friends_list()
-#-----------------------------------------------------------------------------
 
 # Help with debugging
-@post('/debug/<cmd:path>')
+@server.post('/debug/<cmd:path>')
 def post_debug(cmd):
     return model.debug(cmd)
 
-#-----------------------------------------------------------------------------
-
 # 404 errors, use the same trick for other types of errors
-@error(404)
+@server.error(404)
 def error(error): 
     return model.handle_errors(error)

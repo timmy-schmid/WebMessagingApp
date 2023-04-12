@@ -1,3 +1,9 @@
-Here are your friends. Click on someone to message them: <br/><br/>
+<p>Here are your friends. Click on someone to message them:</p> <br/><br/>
 
-${friends_html_table}
+<table>
+% for friend in friends_list:
+    <tr>
+    %for field in friend:
+        <td><a href="chat?friend={{field}}">{{field}}</a></td>
+    </tr>
+</table>

@@ -1,14 +1,23 @@
 
-Login with a username and password
-</p>
-<p>
-<form action="/login" method="post">
-    Username: <input name="username" type="text" />
-</br>
-    Password: <input name="password" type="password" />
-</br>
-    <input value="Login" type="submit" />
-</form>
-</p>
-</center>
+<p>Login with a username and password</p>
+
+<div>
+    <p>
+    <form action="/login" method="post">
+        Username: <input name="username" type="text" />
+    </br>
+        Password: <input name="password" type="password" />
+    </br>
+        <input value="Login" type="submit" />
+    </form>
+    </p>
+</div>
+
+% if defined('err'):
+<p class="error">{{err}}</p>
+% end
+
+% if defined('username'):
+<p>This username-password combination is valid, welcome {{username}}</p>
+% end
 

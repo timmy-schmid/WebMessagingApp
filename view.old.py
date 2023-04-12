@@ -3,7 +3,6 @@
 # You can find a fuller explanation for this file in the README file
 #-----------------------------------------------------------------------------
 import string
-from bottle import template
 
 class View():
     '''
@@ -49,6 +48,7 @@ class View():
             header_template=header_template, 
             tailer_template=tailer_template, 
             **kwargs)
+
         return rendered_template
 
 
@@ -78,12 +78,9 @@ class View():
             :: kwargs :: The local key value pairs to pass to the template
         '''
         # Construct the head, body and tail separately
-
-        
-        rendered_head = template(header_template, **kwargs)
-        rendered_body = template(body_template, **kwargs)
-
-        rendered_tail = template(tailer_template, **kwargs)
+        rendered_body = self.simple_render(body_template, **kwargs)
+        rendered_head = self.simple_render(header_template, **kwargs)
+        rendered_tail = self.simple_render(tailer_template, **kwargs)
 
         # Join them
         rendered_template = rendered_head + rendered_body + rendered_tail
@@ -95,7 +92,7 @@ class View():
         return rendered_template
 
 
-    def simple_render(self, t, **kwargs):
+    def simple_render(self, template, **kwargs):
         '''
             simple_render 
             A simple render using the format method
@@ -103,19 +100,19 @@ class View():
             :: template :: The template to use
             :: kwargs :: A dictionary of key value pairs to pass to the template
         '''
-        t = string.Template(t)
-        t = t.safe_substitute(**kwargs)
-        return  t
+        template = string.Template(template)
+        template = template.safe_substitute(**kwargs)
+        return  template
 
 
-    def global_render(self, t):
+    def global_render(self, template):
         '''
             global_render 
             Renders using the global defaults
             
             :: template :: The template to use
         '''
-        return template(t, **self.global_renders)
+        return self.simple_render(template, **self.global_renders)
     
 
     #for displaying friend list?

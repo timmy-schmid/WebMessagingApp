@@ -10,22 +10,33 @@ import random
 import no_sql_db
 import hashlib
 import os
+import uuid
+from bottle import redirect,request, response
 
-# Initialise our views, all arguments are defaults for the template
+MAX_PWD_LENGTH = 8
+
 page_view = view.View()
-current_user = []
-header_switch = "header"
+
+sessions = {}
 
 #-----------------------------------------------------------------------------
 # Index
 #-----------------------------------------------------------------------------
+
+def get_session_username():
+
+    user_session_id = request.get_cookie("user_session_id")
+    if user_session_id not in sessions:
+        return
+    else:
+        return sessions[user_session_id]
 
 def index():
     '''
         index
         Returns the view for the index
     '''
-    return page_view("index", header=header_switch)
+    return page_view("index",username=get_session_username())
 
 #-----------------------------------------------------------------------------
 # Create User
@@ -36,7 +47,11 @@ def create_user_form():
         create_user_form
         Returns the view for the create_user_form
     '''
-    return page_view("create_user", header=header_switch)
+
+    if get_session_username():
+        return redirect('/')
+
+    return page_view("create_user")
 
 # Check the user credentials
 def create_user(username, password):
@@ -49,23 +64,30 @@ def create_user(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
-    global header_switch 
-
+    if get_session_username():
+        return redirect('/')
+    
     # Salt and hash the password
     salt = os.urandom(32)
     key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
-
-    if no_sql_db.database.search_table_for_entry("users", "username", username) != None and no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", key):
-        err_str = "User already exists. You have been logged in " + username + "!"
-        header_switch = "login_header"
-        return page_view.load_and_render("invalid_create_user", header=header_switch, reason=err_str)
-
+    
+    if len(username) == 0 :
+        err_str = "Username cannot be empty. Please try again"
+        return page_view("create_user", err=err_str)
+    elif username == password:
+        err_str = "Username cannot be the same as password" 
+        return page_view("create_user", err=err_str)
+    elif len(password) < MAX_PWD_LENGTH:
+        err_str = "Password must be at least 8 characters long. Please try again" 
+        return page_view("create_user", err=err_str)
+    elif no_sql_db.database.search_table_for_entry("users", "username", username):
+        err_str = "A user already exists with this username. Please login instead"
+        return page_view("create_user", err=err_str)
     else:
         no_sql_db.database.create_table_entry('users', ["id", username, key, salt])
-        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
-        header_switch = "login_header"
-        return page_view.load_and_render("valid_create_user", header=header_switch, name=username)
-
+        create_session(username)
+        page_view.global_renders['username']=username
+        return page_view("create_user", username=username)
 
 #-----------------------------------------------------------------------------
 # Login
@@ -76,6 +98,10 @@ def login_form():
         login_form
         Returns the view for the login_form
     '''
+
+    if get_session_username():
+        return redirect('/')
+
     return page_view("login")
 
 #-----------------------------------------------------------------------------
@@ -91,30 +117,31 @@ def login_check(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
-    global header_switch 
-
-    # Find the old salt and hash the new password
-    salt = no_sql_db.database.search_table_for_value("users", "username", username, 3)
-    new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), salt, 100000)
+    if get_session_username():
+        return redirect('/')
 
     #Check if user is in database or not  
-    # Edge case would be where two users have the same password - add code to no_sql_db to then fix for this if this could happen
-    if no_sql_db.database.search_table_for_entry("users", "username", username) == None:
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+    if current_user == None:
         err_str = "User does not exist. Please create user first."
-        return page_view("invalid_login", header=header_switch, reason=err_str)
+        return page_view("login", err=err_str)
 
-    elif no_sql_db.database.search_table_for_entry("users", "username", username) == no_sql_db.database.search_table_for_entry("users", "password", new_key):
-        current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
-        header_switch = "login_header"
-        return page_view.load_and_render("valid_login", header=header_switch, name=username)
+    # Find the old salt and hash the new password
+    new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), current_user[3], 100000)
     
-    elif no_sql_db.database.search_table_for_entry("users", "username", username) != no_sql_db.database.search_table_for_entry("users", "password", new_key):
-        err_str = "Incorrect Password"
-        return page_view("invalid_login", header=header_switch, reason=err_str)
+    if current_user[2] == new_key:
+        create_session(username)
+        return page_view.load_and_render("valid_login", header='login_header', name=username)
+    else:
+        err_str = "Incorrect Password. Please try again"
+        return page_view("login", err=err_str)
 
-    # By default assume good creds
-    #login = False
-     
+
+#creates a session for the user via setting a cookie
+def create_session(username):
+    user_session_id = str(uuid.uuid4())
+    sessions[user_session_id] = username
+    response.set_cookie("user_session_id",user_session_id)
 #-----------------------------------------------------------------------------
 # Logout
 #-----------------------------------------------------------------------------
@@ -124,19 +151,25 @@ def logout_button():
         logout
         Returns the view for the logout_button
     '''
-    return page_view("logout", header=header_switch)
+    if not get_session_username():
+        return redirect('/')
+
+
+    return page_view("logout",username=get_session_username())
 
 # Check the login credentials
 def logout_check():
     '''
         logout_check
         Checks user has been logged out
-
     '''
-    global header_switch 
-    header_switch = "header"
+    if not get_session_username():
+        return redirect('/')
 
-    return page_view("valid_logout", header=header_switch)
+    user_session_id = request.get_cookie("user_session_id")
+    sessions.pop(user_session_id)
+
+    return redirect("/")
 
 #-----------------------------------------------------------------------------
 # About
@@ -147,7 +180,8 @@ def about():
         about
         Returns the view for the about page
     '''
-    return page_view("about", header=header_switch, garble=about_garble())
+
+    return page_view("about", garble=about_garble(),username=get_session_username())
 
 
 # Returns a random string each time
@@ -182,18 +216,27 @@ def debug(cmd):
 def friends_list():
     #retrieve friends from database by user id
 
+    current_user = get_session_username()
 
+    if not current_user:
+        return redirect('/')
 
     data = no_sql_db.database.select_all_table_values("users","username")
-
-
-    #return page_view.load_and_render("valid_login", header=header_switch, name=username)
-
     print(data)
-    #data = [["Jane"], ["Alex"], ["Mark"]]
+    print(type(data))
+    data.remove([current_user])
+    return page_view("friends", friends_list=data,username=get_session_username())
 
-    result = page_view.render_list_as_table(data)
-    return page_view("friends", header=header_switch, friends_html_table=result)
+#-----------------------------------------------------------------------------
+# Messaging
+#-----------------------------------------------------------------------------
+
+def chat(friend):
+    if not get_session_username() or friend is None:
+        return redirect('/')
+    
+    return page_view("chat",friend=friend,username=get_session_username())    
+
 
 #-----------------------------------------------------------------------------
 # 404

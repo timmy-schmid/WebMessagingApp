@@ -6,10 +6,19 @@
 </head>
 
 <p>
+  <div>
 <ul>
   <li><a class="active" href="/home">Home</a></li>
+
+  % if not defined('username') or username is None:
+
   <li><a href="/create_user">Create user</a></li>
   <li><a href="/login">Login</a></li>
+  % else:
+    <li><a href="/logout">Logout</a></li>
+    <li><a href="/friends">Friends</a></li> 
+    <li style="float:right">Welcome {{username}}</li>
+  % end
   <li><a href="/about">About</a></li>
   <!-- <li><a href="/friends">Friends</a></li> -->
 </ul>
@@ -19,8 +28,4 @@
 
 <h3><i>Because the usability is more important than the back end for now.</i></h3>
 
-<p>
-<img src="img/header.jpg" alt="Some stuff that popped out of tensor flow" height="80%">
-</p>
-
-<p>
+<img src="img/header.jpg" alt="Some stuff that popped out of tensor flow" height="30%">
