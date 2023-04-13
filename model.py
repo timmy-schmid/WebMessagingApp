@@ -96,7 +96,6 @@ def create_user(username, password):
     else:
         no_sql_db.database.create_table_entry('users', ["id", username, key, salt])
         create_session(username)
-        page_view.global_renders['username']=username
         return page_view("create_user", username=username)
 
 #-----------------------------------------------------------------------------
@@ -222,10 +221,7 @@ def debug(cmd):
 #-----------------------------------------------------------------------------
 # Friends list
 #-----------------------------------------------------------------------------
-
-def friends_list():
-    #retrieve friends from database by user id
-
+def friends_data():
     current_user = get_session_username()
 
     if not current_user:
@@ -235,7 +231,22 @@ def friends_list():
     print(data)
     print(type(data))
     data.remove([current_user])
-    return page_view("friends", friends_list=data,username=get_session_username())
+    return data
+
+def friends_list():
+    #retrieve friends from database by user id
+    """
+    current_user = get_session_username()
+
+    if not current_user:
+        return redirect('/')
+
+    data = no_sql_db.database.select_all_table_values("users","username")
+    print(data)
+    print(type(data))
+    data.remove([current_user])
+    """
+    return page_view("friends", friends_list=friends_data(),username=get_session_username())
 
 #-----------------------------------------------------------------------------
 # Messaging
