@@ -11,6 +11,7 @@ import no_sql_db
 import hashlib
 import os
 import uuid
+import re
 from bottle import redirect,request, response
 
 MAX_PWD_LENGTH = 8
@@ -64,6 +65,7 @@ def create_user(username, password):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
+
     if get_session_username():
         return redirect('/')
     
@@ -74,15 +76,23 @@ def create_user(username, password):
     if len(username) == 0 :
         err_str = "Username cannot be empty. Please try again"
         return page_view("create_user", err=err_str)
+    
     elif username == password:
         err_str = "Username cannot be the same as password" 
         return page_view("create_user", err=err_str)
+    
     elif len(password) < MAX_PWD_LENGTH:
         err_str = "Password must be at least 8 characters long. Please try again" 
         return page_view("create_user", err=err_str)
+    
+    elif re.compile('[^0-9a-zA-Z]+').search(password) == None:
+        err_str = "Password must contain a special character. Please try again" 
+        return page_view("create_user", err=err_str)
+        
     elif no_sql_db.database.search_table_for_entry("users", "username", username):
         err_str = "A user already exists with this username. Please login instead"
         return page_view("create_user", err=err_str)
+    
     else:
         no_sql_db.database.create_table_entry('users', ["id", username, key, salt])
         create_session(username)
@@ -131,7 +141,7 @@ def login_check(username, password):
     
     if current_user[2] == new_key:
         create_session(username)
-        return page_view.load_and_render("valid_login", header='login_header', name=username)
+        return page_view.load_and_render("login", username=username)
     else:
         err_str = "Incorrect Password. Please try again"
         return page_view("login", err=err_str)
