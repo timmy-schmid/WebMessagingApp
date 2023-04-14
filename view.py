@@ -116,22 +116,4 @@ class View():
             :: template :: The template to use
         '''
         return template(t, **self.global_renders)
-    
-
-    #for displaying friend list?
-    # table would go inside the body
-    def render_list_as_table(self, data):
-        #If you want to change the formatting of the table then you could do it here, or create a new template for a row of a table
-        #body_template = string.Template(self.load_template(row_template))
-
-        rendered_html = "<table>"
-        for row in data:
-            rendered_html += "<tr>"
-            for col in row:
-                rendered_html += "<td>" + str(col) + "</td>" #Add a link here if you want the friend to be clickable
-                #rendered_html += row_template.safe_substitute(val=str(col))
-            rendered_html += "</tr>"
-        rendered_html += "</table>"
-        
-        return rendered_html
 

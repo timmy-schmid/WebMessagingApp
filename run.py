@@ -5,6 +5,7 @@
 '''
 
 import sys
+import eventlet
 from bottle import run, Bottle
 
 #-----------------------------------------------------------------------------
@@ -19,25 +20,24 @@ from controller import server
 
 # It might be a good idea to move the following settings to a config file and then load them
 # Change this to your IP address or 0.0.0.0 when actually hosting
-host = 'localhost'
+host = ''
 port = 8080
 
 # Turn this off for production
 debug = True
 
 app = Bottle()
+app.merge(server)
 
-def run_server():    
+def run_server():
+    eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
+                                       certfile='cert.pem',
+                                       keyfile='key.pem',
+                                       debug=debug,
+                                       server_side=True),
+                    app.wsgi)
 
-    app.merge(server)
 
-    app.run(host=host,
-        port=port,
-        server='gunicorn',
-        debug=1,
-        keyfile='key.pem',
-        certfile='cert.pem'
-    )  
 
 # Optional SQL support
 """

@@ -1,13 +1,17 @@
+% if not defined('username'):
 <p>Create user with username and password</p>
+</br>
+
 <div>
     <form action="/create_user" method="post">
         Username: <input name="username" type="text" />
-    </br>
+    </br></br>
         Password: <input name="password" type="password" />
-    </br>
-        <input value="Create user" type="submit" />
+    </br></br>
+        <button type="submit" />Create user</button>
     </form>
 </div>
+% end
 
 % if defined('err'):
 <p class="error">{{err}}</p>

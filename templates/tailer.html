@@ -1,4 +1,60 @@
-<ul>
-  <li><a></a></li>
-</ul>
-<script src="js/script_tail.js"></script>
+
+    </main>
+    <ul>
+        <li><a></a></li>
+    </ul>
+    <script type="text/javascript" src="/js/socket.io.js" charset="utf-8"></script>
+
+    % if defined('chat') and chat == True:
+        <script type="text/javascript">
+        const socket = io.connect();
+
+        socket.on('connect', function() {
+            socket.emit('join_chat', {
+              friend: "{{ friend }}"
+            });
+        });
+
+        let msg_input = document.getElementById('msg_input');
+        document.getElementById('msg_input_form').onsubmit = function(event) {
+            let msg = msg_input.value.trim();
+            if (msg.length) {
+                socket.emit('send_msg', {
+                    username: "{{ username }}",
+                    friend: "{{ friend }}",
+                    msg: msg
+                })
+            }
+            return false;
+        } 
+        msg_input.value = '';
+        msg_input.focus(); 
+
+        document.getElementById('close').onclick = function(event) {
+            socket.emit('leave_chat', {
+                    username: "{{ username }}",
+                    friend: "{{ friend }}",
+                })
+        }
+
+        socket.on('recieve_msg', function(data) {
+            const newDiv = document.createElement('div')
+            newDiv.innerHTML = `<b>${data.username}:&nbsp;</b> ${data.msg}`;
+            document.getElementById('messages').appendChild(newDiv);
+        });
+
+        socket.on('join_announcement', function(data) {
+            const newDiv = document.createElement('div')
+            newDiv.innerHTML = `<b>${data.username}</b> has joined the room`;
+            document.getElementById('messages').appendChild(newDiv);
+        });
+
+        socket.on('leave_announcement', function(data) {
+            const newDiv = document.createElement('div')
+            newDiv.innerHTML = `<b>${data.username}</b> has left the room`;
+            document.getElementById('messages').appendChild(newDiv);
+        });
+
+    </script>
+    %end
+</body>

@@ -1,15 +1,22 @@
 <h1>Chat Room</h1>
-
+</br>
 <p> Hi {{username}} you are now chatting with {{friend}}</p>
 
-<div class="chat_window">
+<div id="messages">
 
 </div>
 
+</br></br></br>
+
 <div>
-    <form action="/login" method="post">
-        Type your message here: <input name="username" type="text" />
-    </br></br>
-        <input value="Send" type="submit" />
+    <form action="/chat" id="msg_input_form" method="post">
+        <input type="text" id="msg_input" placeholder="Enter your message here"/>
+    </br>        </br>
+        <button type="submit">Send</button>
+
+    </form>
+
+    <form action="/chat" method="post">
+        <button id="close" type="submit">Leave Room</button>
     </form>
 </div>

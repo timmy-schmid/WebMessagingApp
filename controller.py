@@ -4,13 +4,14 @@
     maybe some simple program logic
 '''
 
-from bottle import Bottle, route, get, post, error, request, static_file
+from bottle import Bottle, route, get, post, error, request, redirect, static_file
 import model
+import eventlet
 import socketio
 
 #socket setup
 server = Bottle()
-sio = socketio.Server(logger=True, async_mode=None)
+sio = socketio.Server(logger=True,engineio_logger=True, async_mode='eventlet')
 server.wsgi = socketio.WSGIApp(sio, server.wsgi)
 
 #-----------------------------------------------------------------------------
@@ -58,6 +59,26 @@ def serve_js(js):
         Returns a static file object containing the requested javascript
     '''
     return static_file(js, root='static/js/')
+
+#-----------------------------------------------------------------------------
+# Sockets
+#-----------------------------------------------------------------------------
+
+@sio.event
+def connect(sid, environ):
+    return model.authenticate_session()
+
+@sio.event
+def join_chat(sid, data):
+    model.join_chat(data,sid,sio)
+    
+@sio.event
+def send_msg(sid, data):
+    model.send_msg(data,sio)
+
+@sio.event
+def leave_chat(sid, data):
+    model.leave_chat(data,sid,sio)
 
 #-----------------------------------------------------------------------------
 # Pages
@@ -110,6 +131,10 @@ def get_chat():
     friend = request.query.get('friend')
 
     return model.chat(friend)
+
+@server.post('/chat')
+def close_chat():
+    return redirect('/')
 
 
 @server.get('/login')
@@ -187,3 +212,18 @@ def post_debug(cmd):
 @server.error(404)
 def error(error): 
     return model.handle_errors(error)
+
+if __name__ == "__main__":
+
+    host = '127.0.0.1'
+    port = 8080
+
+    # Turn this off for production
+    debug = True
+
+    eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
+                                    certfile='cert.pem',
+                                    keyfile='key.pem',
+                                    debug=debug,
+                                    server_side=True),
+                    server.wsgi)
