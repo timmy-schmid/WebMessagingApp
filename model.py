@@ -12,6 +12,7 @@ import hashlib
 import os
 import uuid
 import re
+import time
 from bottle import redirect,request, response
 
 MAX_PWD_LENGTH = 8
@@ -148,9 +149,11 @@ def login_check(username, password):
 
 #creates a session for the user via setting a cookie
 def create_session(username):
+    user_session_id = request.get_cookie("user_session_id")
     user_session_id = str(uuid.uuid4())
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
+
 #-----------------------------------------------------------------------------
 # Logout
 #-----------------------------------------------------------------------------
