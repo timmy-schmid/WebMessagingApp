@@ -269,17 +269,6 @@ def debug(cmd):
 #-----------------------------------------------------------------------------
 # Friends list
 #-----------------------------------------------------------------------------
-def friends_data():
-    current_user = get_session_username()
-
-    if not current_user:
-        return redirect('/')
-
-    data = no_sql_db.database.select_all_table_values("users","username")
-    print(data)
-    print(type(data))
-    data.remove([current_user])
-    return data
 
 def friends_list():
     #retrieve friends from database by user id
