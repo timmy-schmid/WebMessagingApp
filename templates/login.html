@@ -1,23 +1,25 @@
 
+% if not defined('username'):
 <p>Login with a username and password</p>
+</br>
 
 <div>
     <p>
-    <form action="/login" method="post">
+    <form id ="login_form" action="/login" method="post">
         Username: <input name="username" type="text" />
-    </br>
+    </br></br>
         Password: <input name="password" type="password" />
-    </br>
-        <input value="Login" type="submit" />
+    </br></br>
+        <button type="submit">Login</button>
     </form>
     </p>
 </div>
+<script>generateRSA('login_form')</script>
+% else:
+<p>This username-password combination is valid, welcome {{username}}</p>
+%end
 
 % if defined('err'):
 <p class="error">{{err}}</p>
-% end
-
-% if defined('username'):
-<p>This username-password combination is valid, welcome {{username}}</p>
 % end
 
