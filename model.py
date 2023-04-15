@@ -133,7 +133,7 @@ def create_user(username, password, public_key):
         err_str = "Password must contain a special character. Please try again" 
         return page_view("create_user", err=err_str)
     elif no_sql_db.database.search_table_for_entry("users", "username", username):
-        err_str = "A user already exists with this username. Please login instead"
+        err_str = "A user already exists with this username. Please choose a different username."
         return page_view("create_user", err=err_str)
     else:
         no_sql_db.database.create_table_entry('users', [username, key, salt, '']) # note we start with empty public_key
@@ -194,8 +194,8 @@ def create_session(username, public_key):
     user_session_id = str(uuid.uuid4())
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
-
     no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
+
 #-----------------------------------------------------------------------------
 # Logout
 #-----------------------------------------------------------------------------
@@ -269,10 +269,21 @@ def debug(cmd):
 #-----------------------------------------------------------------------------
 # Friends list
 #-----------------------------------------------------------------------------
+def friends_data():
+    current_user = get_session_username()
+
+    if not current_user:
+        return redirect('/')
+
+    data = no_sql_db.database.select_all_table_values("users","username")
+    print(data)
+    print(type(data))
+    data.remove([current_user])
+    return data
 
 def friends_list():
     #retrieve friends from database by user id
-
+    
     current_user = authenticate_session()
 
     if not current_user:
