@@ -91,7 +91,7 @@ def create_user(username, password):
         return page_view("create_user", err=err_str)
         
     elif no_sql_db.database.search_table_for_entry("users", "username", username):
-        err_str = "A user already exists with this username. Please login instead"
+        err_str = "A user already exists with this username. Please choose a different username."
         return page_view("create_user", err=err_str)
     
     else:
