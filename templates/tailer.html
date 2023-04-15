@@ -3,10 +3,15 @@
     <ul>
         <li><a></a></li>
     </ul>
+
+    <!-- Client Side Socket handling-->
+    % if defined('chat') and chat == True:
     <script type="text/javascript" src="/js/socket.io.js" charset="utf-8"></script>
 
-    % if defined('chat') and chat == True:
         <script type="text/javascript">
+
+        let friend_pk = '';
+
         const socket = io.connect();
 
         socket.on('connect', function() {
@@ -19,11 +24,22 @@
         document.getElementById('msg_input_form').onsubmit = function(event) {
             let msg = msg_input.value.trim();
             if (msg.length) {
+                
+                var encrypt = new JSEncrypt();
+                encrypt.setPublicKey(friend_pk);
+                console.log("************************************************************************")
+                console.log("{{ username }}" + " is encrypting msg " + msg + " using " + "{{friend}}" + " public key.")
+                console.log(friend_pk)
+                encrypted_msg = encrypt.encrypt(msg)
+                console.log("encrypted msg: " + encrypted_msg)
                 socket.emit('send_msg', {
                     username: "{{ username }}",
                     friend: "{{ friend }}",
-                    msg: msg
+                    msg: encrypted_msg
                 })
+                const newDiv = document.createElement('div')
+                newDiv.innerHTML = `<b>{{username}}:&nbsp;</b> ${msg}`;
+                document.getElementById('messages').appendChild(newDiv);
             }
             return false;
         } 
@@ -39,7 +55,15 @@
 
         socket.on('recieve_msg', function(data) {
             const newDiv = document.createElement('div')
-            newDiv.innerHTML = `<b>${data.username}:&nbsp;</b> ${data.msg}`;
+
+            console.log("************************************************************************")
+            console.log("{{username }}" + " is recieving encrypted msg " + data.msg + " and is unencrypyting using own private key")
+            var decrypt = new JSEncrypt();
+            console.log(localStorage.RSASecretKey)
+            decrypt.setPrivateKey(localStorage.RSASecretKey);
+            var unencrypted = decrypt.decrypt(data.msg);
+            console.log("unencrypted msg: " + data.msg)
+            newDiv.innerHTML = `<b>${data.username}:&nbsp;</b> ${unencrypted}`;
             document.getElementById('messages').appendChild(newDiv);
         });
 
@@ -47,6 +71,13 @@
             const newDiv = document.createElement('div')
             newDiv.innerHTML = `<b>${data.username}</b> has joined the room`;
             document.getElementById('messages').appendChild(newDiv);
+            console.log("incoming key: " + JSON.stringify(data.friend_pk));
+            if (data.friend_pk != localStorage.RSAPublicKey) {
+                console.log("triggered")
+                friend_pk = data.friend_pk;
+            }
+            console.log("My Public Key: " + JSON.stringify(localStorage.RSAPublicKey))
+            console.log("Friends Public Key: " + friend_pk)
         });
 
         socket.on('leave_announcement', function(data) {
@@ -57,4 +88,5 @@
 
     </script>
     %end
+
 </body>

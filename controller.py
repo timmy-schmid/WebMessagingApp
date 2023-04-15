@@ -66,7 +66,7 @@ def serve_js(js):
 
 @sio.event
 def connect(sid, environ):
-    return model.authenticate_session()
+    return model.connect_socket(sid)
 
 @sio.event
 def join_chat(sid, data):
@@ -74,11 +74,16 @@ def join_chat(sid, data):
     
 @sio.event
 def send_msg(sid, data):
-    model.send_msg(data,sio)
+    model.send_msg(data,sid,sio)
 
 @sio.event
 def leave_chat(sid, data):
     model.leave_chat(data,sid,sio)
+
+#@sio.event
+#def disconnect(sid):
+    #model.disconnect(sid,sio)
+
 
 #-----------------------------------------------------------------------------
 # Pages
@@ -119,9 +124,11 @@ def post_create_user():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
+    print(repr(public_key))
     
     # Call the appropriate method
-    return model.create_user(username, password)
+    return model.create_user(username, password, public_key)
 
 # Display the login page
 
@@ -159,9 +166,10 @@ def post_login():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    public_key = request.forms.get('public_key')
     
     # Call the appropriate method
-    return model.login_check(username, password)
+    return model.login_check(username, password, public_key)
 
 # Display the logout page
 @server.get('/logout')

@@ -57,8 +57,18 @@ class Table():
     
     def select_all_table_values(self,target_field_name):
         return [[val[self.fields.index(target_field_name)]] for val in self.entries]
-        
+    
 
+    #returns the number of fields updated
+    def update_table_val(self, search_field, search_val, set_field, set_value):
+
+        count = 0
+        for entry in self.entries:
+            for field_name, value in zip(self.fields, entry):
+                if search_field == field_name and search_val == value:
+                    entry[self.fields.index(set_field)] = set_value      
+                    count +=1
+        return count
 
 class DB():
     '''
@@ -70,7 +80,7 @@ class DB():
         self.tables = {}
 
         # Setup your tables
-        self.add_table('users',"username", "password", "salt")
+        self.add_table('users',"username", "password", "salt",'public_key')
         return
 
     def add_table(self, table_name, *table_fields):
@@ -81,7 +91,9 @@ class DB():
         self.tables[table_name] = table
 
         return
-
+    
+    def update_table_val(self, table_name, search_field, search_val, set_field, set_value):
+        return self.tables[table_name].update_table_val(search_field,search_val,set_field, set_value)
 
     def search_table_for_entry(self, table_name, target_field_name, target_value):
         '''

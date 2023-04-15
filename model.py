@@ -33,14 +33,25 @@ class Rooms:
         if self.users.get(friend, None) is None:
             self.users[friend] = {}
 
-        room_id = self.users[username].get(friend, None)
-        if room_id is None:
+        room_id = self.users[friend].get(username, None)
+        print("GETTING ROOM ID: " + str(room_id))
+
+        if room_id is not None: #if the room_id exists already then we add the room_id for the current user
+            self.users[username][friend] = room_id
+        else:
             room_id = self.counter
             self.users[username][friend] = self.counter
             self.users[friend][username] = self.counter
             self.counter+=1
 
         return room_id
+    
+    def remove_all_rooms(self,sid,sio):
+        current_username = sid_map(sid)
+        for friend in self.users[current_username]:
+            room_id = self.remove_room_id(self,current_username,friend)
+            sio.leave_room(sid,room_id)
+            sio.emit('leave_announcement', {'username': current_username }, room=room_id)
 
     #removes room_id as the the users session is ending.
     #Note, we don't delete the friends room as they may still be connected
@@ -49,6 +60,7 @@ class Rooms:
 
 
 sessions = {}
+sid_map = {}
 rooms = Rooms()
 
 
@@ -90,7 +102,7 @@ def create_user_form():
     
 
 # Check the user credentials
-def create_user(username, password):
+def create_user(username, password, public_key):
     '''
         Create_user
         Checks usernames and passwords
@@ -111,7 +123,6 @@ def create_user(username, password):
     if len(username) == 0 :
         err_str = "Username cannot be empty. Please try again"
         return page_view("create_user", err=err_str)
-    
     elif username == password:
         err_str = "Username cannot be the same as password" 
         return page_view("create_user", err=err_str)
@@ -125,8 +136,8 @@ def create_user(username, password):
         err_str = "A user already exists with this username. Please login instead"
         return page_view("create_user", err=err_str)
     else:
-        no_sql_db.database.create_table_entry('users', [username, key, salt])
-        create_session(username)
+        no_sql_db.database.create_table_entry('users', [username, key, salt, '']) # note we start with empty public_key
+        create_session(username, public_key)
         page_view.global_renders['username']=username
         return page_view("create_user", username=username)
 
@@ -148,7 +159,7 @@ def login_form():
 #-----------------------------------------------------------------------------
 
 # Check the login credentials
-def login_check(username, password):
+def login_check(username, password, public_key):
     '''
         login_check
         Checks usernames and passwords
@@ -171,7 +182,7 @@ def login_check(username, password):
     new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), current_user[2], 100000)
     
     if current_user[1] == new_key:
-        #create_session(username)
+        create_session(username, public_key)
         return page_view.load_and_render("login", username=username)
     else:
         err_str = "Incorrect Password. Please try again"
@@ -179,10 +190,12 @@ def login_check(username, password):
 
 
 #creates a session for the user via setting a cookie
-def create_session(username):
+def create_session(username, public_key):
     user_session_id = str(uuid.uuid4())
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
+
+    no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
 #-----------------------------------------------------------------------------
 # Logout
 #-----------------------------------------------------------------------------
@@ -283,20 +296,29 @@ def chat(friend):
     
     return page_view("chat",friend=friend,username=username,chat=True)    
 
+def connect_socket(sid) :
+    sid_map[sid] = sessions[request.get_cookie("user_session_id")]
+    return authenticate_session()
+
 def join_chat(data,sid,sio):
     username = authenticate_session()
+    friend_pk = no_sql_db.database.search_table_for_entry("users", "username", data['friend'])[3]
+    print(friend_pk)
     room_id = rooms.get_room_id(username,data['friend'])
     sio.enter_room(sid,room_id)
-    sio.emit('join_announcement', {'username': username}, room=room_id) 
+    sio.emit('join_announcement', {'username': username, 'friend_pk': friend_pk}, room=room_id) 
 
-def send_msg(data,sio):
+def send_msg(data,sid,sio):
     room_id = rooms.get_room_id(data['username'],data['friend'])
-    sio.emit('recieve_msg', {'msg': data['msg'], 'username':data['username']}, room=room_id)
+    sio.emit('recieve_msg', {'msg': data['msg'], 'username':data['username']}, room=room_id, skip_sid=sid)
 
 def leave_chat(data,sid,sio):
     room_id = rooms.remove_room_id(data['username'],data['friend'])
     sio.leave_room(sid,room_id)
     sio.emit('leave_announcement', {'username': data['username'] }, room=room_id)
+
+def disconnect(sid,sio):
+    rooms.remove_all_rooms(sid,sio)
 
 
 

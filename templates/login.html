@@ -5,7 +5,7 @@
 
 <div>
     <p>
-    <form action="/login" method="post">
+    <form id ="login_form" action="/login" method="post">
         Username: <input name="username" type="text" />
     </br></br>
         Password: <input name="password" type="password" />
@@ -14,23 +14,12 @@
     </form>
     </p>
 </div>
-% end
+<script>generateRSA('login_form')</script>
+% else:
+<p>This username-password combination is valid, welcome {{username}}</p>
+%end
+
 % if defined('err'):
 <p class="error">{{err}}</p>
-% end
-
-% if defined('username'):
-<script>
-    function generateRSA() {
-        if (!localStorage.RSAPublicKey || !localStorage.RSAPrivateKey) {
-            var crypt = new JSEncrypt({default_key_size: 512});
-            crypt.getKey();
-            sessionStorage.RSAPublicKey = crypt.getPrivateKey();
-            sessionStorage.RSAPrivate = crypt.getPrivateKey();
-        }
-    }
-</script>
-
-<p>This username-password combination is valid, welcome {{username}}</p>
 % end
 

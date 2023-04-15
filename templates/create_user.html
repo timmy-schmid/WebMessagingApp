@@ -3,7 +3,7 @@
 </br>
 
 <div>
-    <form action="/create_user" method="post">
+    <form id="create_user_form" action="/create_user" method="post">
         Username: <input name="username" type="text" />
     </br></br>
         Password: <input name="password" type="password" />
@@ -11,12 +11,12 @@
         <button type="submit" />Create user</button>
     </form>
 </div>
+<script>generateRSA('create_user_form')</script>
+% else:
+<p class="success">Thank you for creating an account {{username}}, you are now logged in. Welcome to our site!</p>
 % end
 
 % if defined('err'):
 <p class="error">{{err}}</p>
 % end
 
-% if defined('username'):
-<p class="success">Thank you for creating an account {{username}}, you are now logged in. Welcome to our site!</p>
-% end
