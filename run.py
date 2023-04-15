@@ -1,94 +1,237 @@
 '''
-    This is a file that configures how your server runs
-    You may eventually wish to have your own explicit config file
-    that this reads from.
+    This file will handle our typical Bottle requests and responses 
+    You should not have anything beyond basic page loads, handling forms and 
+    maybe some simple program logic
 '''
 
-import sys
-import eventlet
-from bottle import run, Bottle
-
-#-----------------------------------------------------------------------------
-# You may eventually wish to put these in their own directories and then load 
-# Each file separately
-
-# For the template, we will keep them together
+from bottle import Bottle, route, get, post, error, request, redirect, static_file
 import model
-import view
-from controller import server
+import eventlet
+import socketio
+
+#socket setup
+server = Bottle()
+sio = socketio.Server(logger=True,engineio_logger=True, async_mode='eventlet')
+server.wsgi = socketio.WSGIApp(sio, server.wsgi)
+
+#-----------------------------------------------------------------------------
+# Static file paths
 #-----------------------------------------------------------------------------
 
-# It might be a good idea to move the following settings to a config file and then load them
-# Change this to your IP address or 0.0.0.0 when actually hosting
-host = ''
-port = 8080
-
-# Turn this off for production
-debug = True
-
-app = Bottle()
-app.merge(server)
-
-def run_server():
-    eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
-                                       certfile='cert.pem',
-                                       keyfile='key.pem',
-                                       debug=debug,
-                                       server_side=True),
-                    app.wsgi)
-
-
-
-# Optional SQL support
-"""
-def manage_db():
+# Allow image loading
+@server.route('/img/<picture:path>')
+def serve_pictures(picture):
     '''
-        Blank function for database support, use as needed
+        serve_pictures
+
+        Serves images from static/img/
+
+        :: picture :: A path to the requested picture
+
+        Returns a static file object containing the requested picture
     '''
+    return static_file(picture, root='static/img/')
 
+# Allow CSS
+@server.route('/css/<css:path>')
+def serve_css(css):
+    '''
+        serve_css
 
-import sql
+        Serves css from static/css/
+
+        :: css :: A path to the requested css
+
+        Returns a static file object containing the requested css
+    '''
+    return static_file(css, root='static/css/')
+
+# Allow javascript
+@server.route('/js/<js:path>')
+def serve_js(js):
+    '''
+        serve_js
+
+        Serves js from static/js/
+
+        :: js :: A path to the requested javascript
+
+        Returns a static file object containing the requested javascript
+    '''
+    return static_file(js, root='static/js/')
+
+#-----------------------------------------------------------------------------
+# Sockets
+#-----------------------------------------------------------------------------
+
+@sio.event
+def connect(sid, environ):
+    return model.connect_socket(sid)
+
+@sio.event
+def join_chat(sid, data):
+    model.join_chat(data,sid,sio)
     
-def manage_db():
+@sio.event
+def send_msg(sid, data):
+    model.send_msg(data,sid,sio)
+
+@sio.event
+def leave_chat(sid, data):
+    model.leave_chat(data,sid,sio)
+
+#@sio.event
+#def disconnect(sid):
+    #model.disconnect(sid,sio)
+
+
+#-----------------------------------------------------------------------------
+# Pages
+#-----------------------------------------------------------------------------
+
+# Redirect to index
+@server.get('/')
+@server.get('/home')
+def get_index():
     '''
-        manage_db
-        Starts up and re-initialises an SQL databse for the server
+        get_index
+        
+        Serves the index page
     '''
-    database_args = ":memory:" # Currently runs in RAM, might want to change this to a file if you use it
-    sql_db = sql.SQLDatabase(database_args=database_args)
 
-    return
-"""
+    return model.index()
 
-def run_commands(args):
+# Display the create user page
+@server.get('/create_user')
+def get_create_user_controller():
     '''
-        run_commands
-        Parses arguments as commands and runs them if they match the command list
-
-        :: args :: Command line arguments passed to this function
+        get_create_user
+        
+        Serves the login page
     '''
-    commands = args[1:]
+    return model.create_user_form()
 
-    # Default command
-    if len(commands) == 0:
-        commands = [default_command]
+# Attempt to create user
+@server.post('/create_user')
+def post_create_user():
+    '''
+        post_create_user
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
 
-    for command in commands:
-        if command in command_list:
-            command_list[command]()
-        else:
-            print("Command '{command}' not found".format(command=command))
+    # Handle the form processing
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
+    print(repr(public_key))
+    
+    # Call the appropriate method
+    return model.create_user(username, password, public_key)
+
+# Display the login page
+
+@server.get('/chat')
+def get_chat():
+
+    friend = request.query.get('friend')
+
+    return model.chat(friend)
+
+@server.post('/chat')
+def close_chat():
+    return redirect('/')
+
+
+@server.get('/login')
+def get_login_controller():
+    '''
+        get_login
+        
+        Serves the login page
+    '''
+    return model.login_form()
+
+# Attempt the login
+@server.post('/login')
+def post_login():
+    '''
+        post_login
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    username = request.forms.get('username')
+    password = request.forms.get('password')
+    public_key = request.forms.get('public_key')
+    
+    # Call the appropriate method
+    return model.login_check(username, password, public_key)
+
+# Display the logout page
+@server.get('/logout')
+def get_logout_controller():
+    '''
+        get_login
+        
+        Serves the login page
+    '''
+    return model.logout_button()
+
+# Attempt the logout
+@server.post('/logout')
+def post_logout():
+    '''
+        post_logout
+        
+        Handles logout attempts
+    '''
+    
+    # Call the appropriate method
+    return model.logout_check()
+
+@server.get('/about')
+def get_about():
+    '''
+        get_about
+        
+        Serves the about page
+    '''
+    return model.about()
+
+@server.get('/friends')
+def get_friends():
+    '''
+        get_friends
+        
+        Serves the friends page
+    '''
+    return model.friends_list()
+
+# Help with debugging
+@server.post('/debug/<cmd:path>')
+def post_debug(cmd):
+    return model.debug(cmd)
+
+# 404 errors, use the same trick for other types of errors
+@server.error(404)
+def error(error): 
+    return model.handle_errors(error)
 
 if __name__ == "__main__":
-    # What commands can be run with this python file
-    # Add your own here as you see fit
-    command_list = {
-        #'manage_db' : manage_db,
-        'server'       : run_server
-    }
 
-    # The default command if none other is given
-    default_command = 'server'
+    host = '127.0.0.1'
+    port = 8080
 
-    #manage_db()
-    run_commands(sys.argv)
+    # Turn this off for production
+    debug = True
+
+    eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
+                                    certfile='cert.pem',
+                                    keyfile='key.pem',
+                                    debug=debug,
+                                    server_side=True),
+                    server.wsgi)
