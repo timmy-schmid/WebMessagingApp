@@ -123,6 +123,9 @@ def create_user(username, password, public_key):
     if len(username) == 0 :
         err_str = "Username cannot be empty. Please try again"
         return page_view("create_user", err=err_str)
+    elif no_sql_db.database.search_table_for_entry("users", "username", username):
+        err_str = "A user already exists with this username. Please choose a different username."
+        return page_view("create_user", err=err_str)
     elif username == password:
         err_str = "Username cannot be the same as password" 
         return page_view("create_user", err=err_str)
@@ -132,15 +135,11 @@ def create_user(username, password, public_key):
     elif re.compile('[^0-9a-zA-Z]+').search(password) == None:
         err_str = "Password must contain a special character. Please try again" 
         return page_view("create_user", err=err_str)
-    elif no_sql_db.database.search_table_for_entry("users", "username", username):
-        err_str = "A user already exists with this username. Please choose a different username."
-        return page_view("create_user", err=err_str)
     else:
         no_sql_db.database.create_table_entry('users', [username, key, salt, '']) # note we start with empty public_key
         user_session_id = create_session(username, public_key)
         page_view.global_renders['username']=username
         return immediate_friends_list(user_session_id)
-        #return page_view("create_user", username=username)
 
 #-----------------------------------------------------------------------------
 # Login
@@ -185,7 +184,6 @@ def login_check(username, password, public_key):
     if current_user[1] == new_key:
         user_session_id = create_session(username, public_key)
         return immediate_friends_list(user_session_id)
-        #return page_view.load_and_render("login", username=username)
     else:
         err_str = "Incorrect Password. Please try again"
         return page_view("login", err=err_str)
@@ -194,7 +192,6 @@ def login_check(username, password, public_key):
 #creates a session for the user via setting a cookie
 def create_session(username, public_key):
     user_session_id = str(uuid.uuid4())
-    #user_session_id = request.get_cookie("user_session_id")
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
     no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
