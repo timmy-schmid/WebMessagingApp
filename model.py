@@ -137,9 +137,10 @@ def create_user(username, password, public_key):
         return page_view("create_user", err=err_str)
     else:
         no_sql_db.database.create_table_entry('users', [username, key, salt, '']) # note we start with empty public_key
-        create_session(username, public_key)
+        user_session_id = create_session(username, public_key)
         page_view.global_renders['username']=username
-        return page_view("create_user", username=username)
+        return immediate_friends_list(user_session_id)
+        #return page_view("create_user", username=username)
 
 #-----------------------------------------------------------------------------
 # Login
@@ -182,8 +183,9 @@ def login_check(username, password, public_key):
     new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), current_user[2], 100000)
     
     if current_user[1] == new_key:
-        create_session(username, public_key)
-        return page_view.load_and_render("login", username=username)
+        user_session_id = create_session(username, public_key)
+        return immediate_friends_list(user_session_id)
+        #return page_view.load_and_render("login", username=username)
     else:
         err_str = "Incorrect Password. Please try again"
         return page_view("login", err=err_str)
@@ -192,9 +194,12 @@ def login_check(username, password, public_key):
 #creates a session for the user via setting a cookie
 def create_session(username, public_key):
     user_session_id = str(uuid.uuid4())
+    #user_session_id = request.get_cookie("user_session_id")
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
     no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
+
+    return user_session_id
 
 #-----------------------------------------------------------------------------
 # Logout
@@ -274,13 +279,21 @@ def friends_list():
     #retrieve friends from database by user id
     
     current_user = authenticate_session()
-
+    
     if not current_user:
         return redirect('/')
 
     data = no_sql_db.database.select_all_table_values("users","username")
     data.remove([current_user])
     print(data)
+    
+    return page_view("friends", friends_list=data,username=current_user)
+
+def immediate_friends_list(user_session_id):
+    current_user = sessions[user_session_id]
+    data = no_sql_db.database.select_all_table_values("users","username")
+    data.remove([current_user])
+
     return page_view("friends", friends_list=data,username=current_user)
 
 #-----------------------------------------------------------------------------
