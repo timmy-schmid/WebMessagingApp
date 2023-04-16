@@ -1,7 +1,6 @@
 //Client Side RSA key generation,storage and sending
   function generateRSA(form_id) {
       if (!localStorage.RSAPublicKey || !localStorage.RSASecretKey) {
-          console.log("I GET HERE")
           var crypt = new JSEncrypt({default_key_size: 512});
           crypt.getKey();
           localStorage.RSAPublicKey = crypt.getPublicKey();
