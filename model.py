@@ -34,7 +34,6 @@ class Rooms:
             self.users[friend] = {}
 
         room_id = self.users[friend].get(username, None)
-        print("GETTING ROOM ID: " + str(room_id))
 
         if room_id is not None: #if the room_id exists already then we add the room_id for the current user
             self.users[username][friend] = room_id
@@ -282,7 +281,6 @@ def friends_list():
 
     data = no_sql_db.database.select_all_table_values("users","username")
     data.remove([current_user])
-    print(data)
     
     return page_view("friends", friends_list=data,username=current_user)
 
@@ -313,7 +311,6 @@ def connect_socket(sid) :
 def join_chat(data,sid,sio):
     username = authenticate_session()
     friend_pk = no_sql_db.database.search_table_for_entry("users", "username", data['friend'])[3]
-    print(friend_pk)
     room_id = rooms.get_room_id(username,data['friend'])
     sio.enter_room(sid,room_id)
     sio.emit('join_announcement', {'username': username, 'friend_pk': friend_pk}, room=room_id) 

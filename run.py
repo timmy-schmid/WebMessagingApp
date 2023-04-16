@@ -125,7 +125,6 @@ def post_create_user():
     username = request.forms.get('username')
     password = request.forms.get('password')
     public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
-    print(repr(public_key))
     
     # Call the appropriate method
     return model.create_user(username, password, public_key)
