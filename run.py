@@ -210,6 +210,22 @@ def get_account_settings():
     '''
     return model.account_settings()
 
+# Attempt the username
+@server.post('/change_username')
+def post_change_username():
+    '''
+        post_login
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    new_username = request.forms.get('new_username')
+    
+    # Call the appropriate method
+    return model.change_username(new_username)
+
 # Attempt the change_password
 @server.post('/change_password')
 def post_change_password():

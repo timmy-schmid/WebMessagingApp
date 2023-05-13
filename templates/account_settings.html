@@ -1,6 +1,27 @@
 <p>Account Settings</p>
 </br>
 
+<p><strong>Change Username</strong></p>
+<p>Current username: {{username}}</p>
+<div>
+    <p>
+    <form id ="change_username_form" action="/change_username" method="post">
+        New username: <input name="new_username" type="text" />
+    </br></br>
+        <button type="submit">Change Username</button>
+    </form>
+    </p>
+</div>
+
+% if defined('success_username'):
+<p class="success">{{success_username}}</p>
+% end
+
+% if defined('err_username'):
+<p class="error">{{err_username}}</p>
+% end
+
+<p><strong>Change Password</strong></p>
 <div>
     <p>
     <form id ="change_password_form" action="/change_password" method="post">
@@ -13,10 +34,10 @@
     </p>
 </div>
 
-% if defined('success'):
-<p class="success">{{success}}</p>
+% if defined('success_password'):
+<p class="success">{{success_password}}</p>
 % end
 
-% if defined('err'):
-<p class="error">{{err}}</p>
+% if defined('err_password'):
+<p class="error">{{err_password}}</p>
 % end
