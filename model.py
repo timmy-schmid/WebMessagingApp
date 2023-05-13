@@ -243,7 +243,7 @@ def account_settings():
 #-----------------------------------------------------------------------------
 
 # Check the username
-def change_username(new_username):
+def change_username(new_username, public_key):
     '''
         change_username
         Checks usernames and passwords
@@ -254,6 +254,7 @@ def change_username(new_username):
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
     username = authenticate_session()
+    print("old username = " + username)
 
     """
     if authenticate_session():
@@ -276,8 +277,12 @@ def change_username(new_username):
         return page_view("account_settings", err_username=err_str, username=username)
     
     else:
+        #Remove current session and create a new one with the new public key
+        user_session_id = request.get_cookie("user_session_id")
+        sessions.pop(user_session_id)
         no_sql_db.database.update_table_val('users', 'username', username, 'username', new_username)
-        
+        create_session(new_username, public_key)
+
         success_str = "Your username has been updated to: " + new_username 
         return page_view("account_settings", success_username=success_str, username=new_username)
 

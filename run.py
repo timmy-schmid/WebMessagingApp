@@ -222,9 +222,10 @@ def post_change_username():
 
     # Handle the form processing
     new_username = request.forms.get('new_username')
+    public_key = request.forms.get('public_key')
     
     # Call the appropriate method
-    return model.change_username(new_username)
+    return model.change_username(new_username, public_key)
 
 # Attempt the change_password
 @server.post('/change_password')
