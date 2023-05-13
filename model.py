@@ -230,6 +230,17 @@ def logout_check():
     return redirect("/")
 
 #-----------------------------------------------------------------------------
+# Account Settings
+#-----------------------------------------------------------------------------
+def account_settings():
+    '''
+        about
+        Returns the view for the account settings page
+    '''
+
+    return page_view("account_settings", username=authenticate_session())
+
+#-----------------------------------------------------------------------------
 # About
 #-----------------------------------------------------------------------------
 

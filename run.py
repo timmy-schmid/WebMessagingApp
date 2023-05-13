@@ -201,6 +201,16 @@ def get_about():
     '''
     return model.about()
 
+@server.get('/account_settings')
+def get_account_settings():
+    '''
+        get_account_settings
+        
+        Serves the account_settings page
+    '''
+    return model.account_settings()
+
+
 @server.get('/friends')
 def get_friends():
     '''
