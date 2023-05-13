@@ -212,7 +212,6 @@ def logout_button():
     if not username:
         return redirect('/')
 
-
     return page_view("logout",username=username)
 
 # Check the login credentials
@@ -239,6 +238,65 @@ def account_settings():
     '''
 
     return page_view("account_settings", username=authenticate_session())
+
+#-----------------------------------------------------------------------------
+
+# Check the login credentials
+def change_password(current_password, new_password):
+    '''
+        change_password
+        Checks usernames and passwords
+
+        :: username :: The username
+        :: password :: The password
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    username = authenticate_session()
+
+    """
+    if authenticate_session():
+        return redirect('/')
+        """
+
+    #Check if user is in database or not  
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+
+    # Find the old salt and hash the new password
+    new_key = hashlib.pbkdf2_hmac('sha256', current_password.encode('utf-8'), current_user[2], 100000)
+
+    # Salt and hash the new password
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', new_password.encode('utf-8'), salt, 100000)
+    
+    if current_user[1] == new_key:
+        if username == new_password:
+            err_str = "Username cannot be the same as new password" 
+            return page_view("account_settings", err=err_str)
+        
+        if current_password == new_password:
+            err_str = "New password is the same as your current password. Choose a new password." 
+            return page_view("account_settings", err=err_str)
+        
+        elif len(new_password) < MAX_PWD_LENGTH:
+            err_str = "New password must be at least 8 characters long. Please try again" 
+            return page_view("account_settings", err=err_str)
+        
+        elif re.compile('[^0-9a-zA-Z]+').search(new_password) == None:
+            err_str = "New password must contain a special character. Please try again" 
+            return page_view("account_settings", err=err_str)
+        
+        else:
+            no_sql_db.database.update_table_val('users', 'username', username, 'password', key)
+            no_sql_db.database.update_table_val('users', 'username', username, 'salt', salt)
+            
+            success_str = "Your password has been updated." 
+            return page_view("account_settings", success=success_str)
+    
+    else:
+        err_str = "Incorrect current password. Please try again"
+        return page_view("account_settings", err=err_str)
+    
 
 #-----------------------------------------------------------------------------
 # About

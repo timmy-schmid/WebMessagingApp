@@ -210,6 +210,23 @@ def get_account_settings():
     '''
     return model.account_settings()
 
+# Attempt the change_password
+@server.post('/change_password')
+def post_change_password():
+    '''
+        post_login
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    current_password = request.forms.get('current_password')
+    new_password = request.forms.get('new_password')
+    
+    # Call the appropriate method
+    return model.change_password(current_password, new_password)
+
 
 @server.get('/friends')
 def get_friends():

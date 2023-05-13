@@ -1,6 +1,5 @@
 <p>Account Settings</p>
 </br>
-<p>Are you sure you want to logout {{username}}?</p>
 
 <div>
     <p>
@@ -13,3 +12,11 @@
     </form>
     </p>
 </div>
+
+% if defined('success'):
+<p class="success">{{success}}</p>
+% end
+
+% if defined('err'):
+<p class="error">{{err}}</p>
+% end
