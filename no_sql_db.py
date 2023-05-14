@@ -80,7 +80,7 @@ class DB():
         self.tables = {}
 
         # Setup your tables
-        self.add_table('users',"username", "password", "salt",'public_key')
+        self.add_table('users',"username", "password", "salt",'public_key', 'is_admin')
         return
 
     def add_table(self, table_name, *table_fields):

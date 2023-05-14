@@ -62,6 +62,15 @@ sessions = {}
 sid_map = {}
 rooms = Rooms()
 
+#-----------------------------------------------------------------------------
+# Admin
+#-----------------------------------------------------------------------------
+
+#create admin
+def create_admin():
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
+    no_sql_db.database.create_table_entry('users', ["admin", key, salt, '', True]) # note we start with empty public_key
 
 #-----------------------------------------------------------------------------
 # Index
@@ -135,7 +144,7 @@ def create_user(username, password, public_key):
         err_str = "Password must contain a special character. Please try again" 
         return page_view("create_user", err=err_str)
     else:
-        no_sql_db.database.create_table_entry('users', [username, key, salt, '']) # note we start with empty public_key
+        no_sql_db.database.create_table_entry('users', [username, key, salt, '', False]) # note we start with empty public_key
         user_session_id = create_session(username, public_key)
         page_view.global_renders['username']=username
         return immediate_friends_list(user_session_id)

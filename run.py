@@ -272,9 +272,13 @@ if __name__ == "__main__":
     # Turn this off for production
     debug = True
 
+    model.create_admin()
+
     eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
                                     certfile='cert.pem',
                                     keyfile='key.pem',
                                     debug=debug,
                                     server_side=True),
                     server.wsgi)
+    
+    
