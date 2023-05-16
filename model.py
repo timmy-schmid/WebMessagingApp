@@ -419,16 +419,12 @@ def friends_list():
         return redirect('/')
 
     data = get_user_data(current_user)
-    #data = no_sql_db.database.select_all_table_values("users","username")
-    #data.remove([current_user])
     
     return page_view("friends", friends_list=data, username=current_user, admin=is_admin)
 
 def immediate_friends_list(user_session_id):
     current_user = sessions[user_session_id]
     data = get_user_data(current_user)
-    #data = no_sql_db.database.select_all_table_values("users","username")
-    #data.remove([current_user])
 
     return page_view("friends", friends_list=data,username=current_user)
 
@@ -448,12 +444,9 @@ def edit_users():
         return redirect('/')
     
     data = get_user_data(current_user)
-    #data = no_sql_db.database.select_all_table_values("users","username")
-    #data.remove([current_user])
 
     return page_view("edit_users", user_list=data,username=current_user)
-    
-    #return page_view("edit_users", username=current_user, admin=is_admin)
+
 
 def remove_user(user):
     username, is_admin = authenticate_session()
@@ -465,28 +458,6 @@ def remove_user(user):
     success_string = "User " + user + " has been removed."
 
     return page_view("edit_users", user_list=data, username=username, admin=is_admin, success=success_string)
-
-def search_for_user1(user):
-    username, is_admin = authenticate_session()
-    current_user = no_sql_db.database.search_table_for_entry("users", "username", user)
-
-    if current_user == None:
-        err_str = "User does not exist. Please find a user with a different username."
-        return page_view("edit_users", err=err_str, username=username, admin=is_admin)
-    
-    else:
-        return page_view("edit_users", user=user, username=username, admin=is_admin)
-    
-def search_for_user1(user):
-    username, is_admin = authenticate_session()
-    current_user = no_sql_db.database.search_table_for_entry("users", "username", user)
-
-    if current_user == None:
-        err_str = "User does not exist. Please find a user with a different username."
-        return page_view("edit_users", err=err_str, username=username, admin=is_admin)
-    
-    else:
-        return page_view("edit_users", user=user, username=username, admin=is_admin)
 
 #-----------------------------------------------------------------------------
 # Messaging

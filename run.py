@@ -277,47 +277,13 @@ def post_search_user():
     user = request.forms.get('user')
 
     if request.forms.get("remove") == "Remove user":
-        print("remove")
         return model.remove_user(user)
+    
+    # No functionality yet
     if request.forms.get("mute") == "Mute user":
         return model.edit_users()
-        print("mute")
     
     # Call the appropriate method
-    
-
-#For edit_users_search
-# Searching for user to edit
-"""
-@server.post('/search_user')
-def post_search_user():
-    '''
-        post_change_password
-        
-        Handles login attempts
-        Expects a form containing 'username' and 'password' fields
-    '''
-
-    # Handle the form processing
-    user = request.forms.get('user')
-
-    
-    # Call the appropriate method
-    return model.search_for_user(user)
-    """
-
-# Searching for user to edit
-@server.post('/remove_user')
-def post_remove_user():
-    print("hi")
-    # Handle the form processing
-    user = request.forms.get('user')
-    
-
-# Searching for user to edit
-@server.post('/mute_user')
-def post_remove_user():
-    print("hi")
 
 # Help with debugging
 @server.post('/debug/<cmd:path>')
