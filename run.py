@@ -278,6 +278,7 @@ def post_search_user():
 
     if request.forms.get("remove") == "Remove user":
         print("remove")
+        return model.remove_user(user)
     if request.forms.get("mute") == "Mute user":
         return model.edit_users()
         print("mute")

@@ -26,6 +26,19 @@ class Table():
 
         self.entries.append(data)
         return
+    
+    def remove_entry(self, data):
+        '''
+        Inserts an entry in the table
+        Doesn't do any type checking
+        '''
+
+        # Bare minimum, we'll check the number of fields
+        if len(data) != len(self.fields):
+            raise ValueError('Wrong number of fields for table')
+
+        self.entries.remove(data)
+        return
 
     def search_table_for_entry(self, target_field_name, target_value):
         '''
@@ -116,6 +129,12 @@ class DB():
             Calls the create entry method on the appropriate table
         '''
         return self.tables[table_name].create_entry(data)
+    
+    def remove_table_entry(self, table_name, data):
+        '''
+            Calls the create entry method on the appropriate table
+        '''
+        return self.tables[table_name].remove_entry(data)
 
 
 # Our global database

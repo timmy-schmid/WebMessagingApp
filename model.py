@@ -404,6 +404,12 @@ def debug(cmd):
 # Friends list
 #-----------------------------------------------------------------------------
 
+def get_user_data(current_user):
+    data = no_sql_db.database.select_all_table_values("users","username")
+    data.remove([current_user])
+
+    return data
+
 def friends_list():
     #retrieve friends from database by user id
     
@@ -412,15 +418,17 @@ def friends_list():
     if not current_user:
         return redirect('/')
 
-    data = no_sql_db.database.select_all_table_values("users","username")
-    data.remove([current_user])
+    data = get_user_data(current_user)
+    #data = no_sql_db.database.select_all_table_values("users","username")
+    #data.remove([current_user])
     
     return page_view("friends", friends_list=data, username=current_user, admin=is_admin)
 
 def immediate_friends_list(user_session_id):
     current_user = sessions[user_session_id]
-    data = no_sql_db.database.select_all_table_values("users","username")
-    data.remove([current_user])
+    data = get_user_data(current_user)
+    #data = no_sql_db.database.select_all_table_values("users","username")
+    #data.remove([current_user])
 
     return page_view("friends", friends_list=data,username=current_user)
 
@@ -439,18 +447,24 @@ def edit_users():
     if not current_user:
         return redirect('/')
     
-    data = no_sql_db.database.select_all_table_values("users","username")
-    data.remove([current_user])
+    data = get_user_data(current_user)
+    #data = no_sql_db.database.select_all_table_values("users","username")
+    #data.remove([current_user])
 
     return page_view("edit_users", user_list=data,username=current_user)
     
-
     #return page_view("edit_users", username=current_user, admin=is_admin)
 
-def search_for_user(user):
+def remove_user(user):
     username, is_admin = authenticate_session()
-    
-    return page_view("edit_users", user=user, username=username, admin=is_admin)
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", user)
+
+    no_sql_db.database.remove_table_entry('users', current_user)
+    data = get_user_data(username)
+
+    success_string = "User " + user + " has been removed."
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, success=success_string)
 
 def search_for_user1(user):
     username, is_admin = authenticate_session()
