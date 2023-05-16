@@ -7,11 +7,11 @@
         %for field in user:
             <form id ="user_form" action="/edit_user" method="post" onsubmit="return submitForm(this);">
                 <center>
-                <a class="friends_list">{{field}}</a>
+                <a>{{field}}</a>
                 
                 <input type="hidden" name="user" value={{field}}>
-                <input type="submit" class="remove" name="remove" value="Remove user" />
-                <input type="submit" class="mute" name="mute" value="Mute user" />
+                <input type="submit" name="remove" value="Remove user" />
+                <input type="submit" name="mute" value="Mute user" />
                 
                 </center>
                 
