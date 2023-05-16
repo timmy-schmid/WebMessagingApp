@@ -276,6 +276,7 @@ def post_search_user():
     # Handle the form processing
     user = request.forms.get('user')
 
+    # Call the appropriate method
     if request.forms.get("remove") == "Remove user":
         return model.remove_user(user)
     
@@ -283,7 +284,6 @@ def post_search_user():
     if request.forms.get("mute") == "Mute user":
         return model.edit_users()
     
-    # Call the appropriate method
 
 # Help with debugging
 @server.post('/debug/<cmd:path>')

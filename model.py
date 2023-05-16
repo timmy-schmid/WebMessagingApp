@@ -370,7 +370,7 @@ def about():
         about
         Returns the view for the about page
     '''
-    username, is_admin=authenticate_session()
+    username, is_admin = authenticate_session()
 
     return page_view("about", garble=about_garble(),username=username, admin=is_admin)
 
@@ -407,12 +407,13 @@ def debug(cmd):
 def get_user_data(current_user):
     data = no_sql_db.database.select_all_table_values("users","username")
     data.remove([current_user])
+    if current_user != "admin":
+        data.remove(["admin"])
 
     return data
 
 def friends_list():
     #retrieve friends from database by user id
-    
     current_user, is_admin = authenticate_session()
     
     if not current_user:
@@ -465,7 +466,7 @@ def remove_user(user):
 
 def chat(friend):
 
-    username = authenticate_session()
+    username, is_admin = authenticate_session()
 
     if not username or friend is None:
         return redirect('/')
@@ -474,10 +475,10 @@ def chat(friend):
 
 def connect_socket(sid) :
     sid_map[sid] = sessions[request.get_cookie("user_session_id")]
-    return authenticate_session()
+    return authenticate_session()[0]
 
 def join_chat(data,sid,sio):
-    username = authenticate_session()
+    username = authenticate_session()[0]
     friend_pk = no_sql_db.database.search_table_for_entry("users", "username", data['friend'])[3]
     room_id = rooms.get_room_id(username,data['friend'])
     sio.enter_room(sid,room_id)
@@ -494,8 +495,6 @@ def leave_chat(data,sid,sio):
 
 def disconnect(sid,sio):
     rooms.remove_all_rooms(sid,sio)
-
-
 
 #-----------------------------------------------------------------------------
 # 404
