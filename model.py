@@ -76,21 +76,23 @@ def create_admin():
 # Index
 #-----------------------------------------------------------------------------
 
-#returns the username if authenticated otherwise returns False
+#returns the username if authenticated and if admin otherwise returns False
 def authenticate_session():
 
     user_session_id = request.get_cookie("user_session_id")
     if user_session_id not in sessions:
         return False
     else:
-        return sessions[user_session_id]
+        current_user = no_sql_db.database.search_table_for_entry("users", "username", sessions[user_session_id])
+        return sessions[user_session_id], current_user[4]
+
 
 def index():
     '''
         index
         Returns the view for the index
     '''
-    return page_view("index",username=authenticate_session())
+    return page_view("index",username=authenticate_session(), admin=False)
         
 
 #-----------------------------------------------------------------------------
@@ -188,10 +190,16 @@ def login_check(username, password, public_key):
 
     # Find the old salt and hash the new password
     new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), current_user[2], 100000)
+    is_admin = current_user[4]
+
+    if current_user[1] == new_key and is_admin == True:
+        user_session_id = create_session(username, public_key)
+        return page_view("login", username=current_user[0], admin=is_admin)
     
-    if current_user[1] == new_key:
+    elif current_user[1] == new_key:
         user_session_id = create_session(username, public_key)
         return immediate_friends_list(user_session_id)
+    
     else:
         err_str = "Incorrect Password. Please try again"
         return page_view("login", err=err_str)
@@ -216,12 +224,12 @@ def logout_button():
         Returns the view for the logout_button
     '''
 
-    username = authenticate_session()
+    username, is_admin = authenticate_session()
 
     if not username:
         return redirect('/')
 
-    return page_view("logout",username=username)
+    return page_view("logout",username=username, admin=is_admin)
 
 # Check the login credentials
 def logout_check():
@@ -245,8 +253,9 @@ def account_settings():
         about
         Returns the view for the account settings page
     '''
+    username, is_admin = authenticate_session()
 
-    return page_view("account_settings", username=authenticate_session())
+    return page_view("account_settings", username=username, admin=is_admin)
 
     
 #-----------------------------------------------------------------------------
@@ -263,7 +272,6 @@ def change_username(new_username, public_key):
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
     username = authenticate_session()
-    print("old username = " + username)
 
     """
     if authenticate_session():
@@ -275,25 +283,25 @@ def change_username(new_username, public_key):
 
     if len(new_username) == 0 :
         err_str = "Username cannot be empty. Please try again"
-        return page_view("account_settings", err_username=err_str, username=username)
+        return page_view("account_settings", err_username=err_str, username=username, admin=current_user[4])
     
     elif username == new_username:
         err_str = "New username is the same as your current username. Choose a new username." 
-        return page_view("account_settings", err_username=err_str, username=username)
+        return page_view("account_settings", err_username=err_str, username=username, admin=current_user[4])
     
     elif no_sql_db.database.search_table_for_entry("users", "username", new_username):
         err_str = "A user already exists with this username. Please choose a different username."
-        return page_view("account_settings", err_username=err_str, username=username)
+        return page_view("account_settings", err_username=err_str, username=username, admin=current_user[4])
     
     else:
         #Remove current session and create a new one with the new public key
         user_session_id = request.get_cookie("user_session_id")
         sessions.pop(user_session_id)
-        no_sql_db.database.update_table_val('users', 'username', username, 'username', new_username)
+        no_sql_db.database.update_table_val('users', 'username', username, 'username', new_username, admin=current_user[4])
         create_session(new_username, public_key)
 
         success_str = "Your username has been updated to: " + new_username 
-        return page_view("account_settings", success_username=success_str, username=new_username)
+        return page_view("account_settings", success_username=success_str, username=new_username, admin=current_user[4])
 
 #-----------------------------------------------------------------------------
 
@@ -310,10 +318,9 @@ def change_password(current_password, new_password):
     '''
     username = authenticate_session()
 
-    """
     if authenticate_session():
         return redirect('/')
-        """
+        
 
     #Check if user is in database or not  
     current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
@@ -328,30 +335,30 @@ def change_password(current_password, new_password):
     if current_user[1] == new_key:
         if username == new_password:
             err_str = "Username cannot be the same as new password" 
-            return page_view("account_settings", err_password=err_str, username=username)
+            return page_view("account_settings", err_password=err_str, username=username, admin=current_user[4])
         
         if current_password == new_password:
             err_str = "New password is the same as your current password. Choose a new password." 
-            return page_view("account_settings", err_password=err_str, username=username)
+            return page_view("account_settings", err_password=err_str, username=username, admin=current_user[4])
         
         elif len(new_password) < MAX_PWD_LENGTH:
             err_str = "New password must be at least 8 characters long. Please try again" 
-            return page_view("account_settings", err_password=err_str, username=username)
+            return page_view("account_settings", err_password=err_str, username=username, admin=current_user[4])
         
         elif re.compile('[^0-9a-zA-Z]+').search(new_password) == None:
             err_str = "New password must contain a special character. Please try again" 
-            return page_view("account_settings", err_password=err_str, username=username)
+            return page_view("account_settings", err_password=err_str, username=username, admin=current_user[4])
         
         else:
             no_sql_db.database.update_table_val('users', 'username', username, 'password', key)
             no_sql_db.database.update_table_val('users', 'username', username, 'salt', salt)
             
             success_str = "Your password has been updated." 
-            return page_view("account_settings", success_password=success_str, username=username)
+            return page_view("account_settings", success_password=success_str, username=username, admin=current_user[4])
     
     else:
         err_str = "Incorrect current password. Please try again"
-        return page_view("account_settings", err_password=err_str, username=username)
+        return page_view("account_settings", err_password=err_str, username=username, admin=current_user[4])
     
 
 #-----------------------------------------------------------------------------
@@ -363,8 +370,9 @@ def about():
         about
         Returns the view for the about page
     '''
+    username, is_admin=authenticate_session()
 
-    return page_view("about", garble=about_garble(),username=authenticate_session())
+    return page_view("about", garble=about_garble(),username=username, admin=is_admin)
 
 
 # Returns a random string each time
@@ -399,7 +407,7 @@ def debug(cmd):
 def friends_list():
     #retrieve friends from database by user id
     
-    current_user = authenticate_session()
+    current_user, is_admin = authenticate_session()
     
     if not current_user:
         return redirect('/')
@@ -407,7 +415,7 @@ def friends_list():
     data = no_sql_db.database.select_all_table_values("users","username")
     data.remove([current_user])
     
-    return page_view("friends", friends_list=data,username=current_user)
+    return page_view("friends", friends_list=data, username=current_user, admin=is_admin)
 
 def immediate_friends_list(user_session_id):
     current_user = sessions[user_session_id]
@@ -415,6 +423,56 @@ def immediate_friends_list(user_session_id):
     data.remove([current_user])
 
     return page_view("friends", friends_list=data,username=current_user)
+
+#-----------------------------------------------------------------------------
+# Edit Users
+#-----------------------------------------------------------------------------
+def edit_users():
+    '''
+        about
+        Returns the view for the account settings page
+    '''
+
+    current_user, is_admin = authenticate_session()
+    
+
+    if not current_user:
+        return redirect('/')
+    
+    data = no_sql_db.database.select_all_table_values("users","username")
+    data.remove([current_user])
+
+    return page_view("edit_users", user_list=data,username=current_user)
+    
+
+    #return page_view("edit_users", username=current_user, admin=is_admin)
+
+def search_for_user(user):
+    username, is_admin = authenticate_session()
+    
+    return page_view("edit_users", user=user, username=username, admin=is_admin)
+
+def search_for_user1(user):
+    username, is_admin = authenticate_session()
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", user)
+
+    if current_user == None:
+        err_str = "User does not exist. Please find a user with a different username."
+        return page_view("edit_users", err=err_str, username=username, admin=is_admin)
+    
+    else:
+        return page_view("edit_users", user=user, username=username, admin=is_admin)
+    
+def search_for_user1(user):
+    username, is_admin = authenticate_session()
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", user)
+
+    if current_user == None:
+        err_str = "User does not exist. Please find a user with a different username."
+        return page_view("edit_users", err=err_str, username=username, admin=is_admin)
+    
+    else:
+        return page_view("edit_users", user=user, username=username, admin=is_admin)
 
 #-----------------------------------------------------------------------------
 # Messaging

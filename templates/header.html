@@ -23,6 +23,12 @@
     % end
     <li><a href="/about">About</a></li>
     <!-- <li><a href="/friends">Friends</a></li> -->
+
+    % if defined('admin') and admin is True:
+    <li><a href="/edit_users">Edit Users</a></li>
+
+    % end
+    
   </ul>
   </p>
   <main>
