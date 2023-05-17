@@ -1,30 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400;1,500;1,700&display=swap');
 
-ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
-li {
-    float: left;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-li a {
-    display: block;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-}
-
-li a:hover {
-    background-color: #111;
+* {
+  box-sizing: border-box;
 }
 
 html, body {
@@ -34,14 +11,6 @@ html, body {
     padding: 0;
 }
 
-img {
-    padding: 0;
-    display: block;
-    margin: 0 auto;
-    max-height: 45%;
-    max-width: 45%;
-}
-
 .chat_window {
     height: 50%;
     border: black solid 0.4rem;
@@ -49,18 +18,63 @@ img {
     padding: 2rem;
 }
 
-html, body {
-    overflow-y:auto;
-    position:fixed;
-    top:0;
-    bottom:0;
-    left:0;
-    right:0;
-}
-
 main > * {
     margin: 0 auto;
     text-align: center;
+}
+
+.main-nav {
+  display: flex;
+  flex-basis: 60%;
+}
+
+.main-header {
+  width: 100vw;
+
+/*
+  position:fixed;
+  top: 0;
+  left: 0;*/
+  display: flex;
+  align-items:center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  background-color: #333;
+}
+
+.main-header__brand img {
+  margin: 0;
+  padding: 1rem;
+  margin: 0 2rem;
+  width: 150px;
+  vertical-align: middle;
+}
+
+.main-nav__items {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.main-nav__item {
+  padding: 0;
+  flex: 1 1 auto;
+  color: white;
+}
+
+.main-nav__item a {
+  text-decoration: none;
+  display:inline-block;
+  height: 0.1rem;
+  color: white;
+}
+
+.main-nav__item a:hover {
+  color: teal;
 }
 
 .error {
@@ -77,15 +91,59 @@ main > * {
     color: black;         
 }
 
-button {
+.dropbtn {
+  height:68.48px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.dropdown-content a {
+  color: black;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+
+.img-settings {
+  width: 1rem;
+  display:inline-block;
+  filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(284deg) brightness(108%) contrast(101%);
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #ddd;}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+/*button {
     appearance: none;
-    background-color: #2ea44f;
     border: 1px solid rgba(27, 31, 35, .15);
     border-radius: 6px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
     display: inline-block;
     font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
     font-size: 14px;
@@ -93,13 +151,13 @@ button {
     line-height: 20px;
     padding: 6px 16px;
     position: relative;
-    text-align: center;
+
     text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
     vertical-align: middle;
     white-space: nowrap;
-}
+}*/
 
 
