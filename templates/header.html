@@ -21,12 +21,12 @@
           <ul class="main-nav__items">
             <li class="main-nav__item" ><a href="/about">About</a></li>
             % if not defined('username') or username is False:
-
             <li class="main-nav__item"><a href="/create_user">Create user</a></li>
             <li class="main-nav__item"><a href="/login">Login</a></li>
             % else:
               <li class="main-nav__item"><a href="/logout">Logout</a></li>
-              <li class="main-nav__item"><a href="/friends">Friends</a></li> 
+              <li class="main-nav__item"><a href="/friends">Friends</a></li>
+              <li><a href="/account_settings">Account Settings</a></li> 
             % end
           </ul>
         </nav>

@@ -23,6 +23,9 @@ main > * {
     text-align: center;
 }
 
+.success {
+    color: green;
+=======
 .main-nav {
   display: flex;
   flex-basis: 60%;

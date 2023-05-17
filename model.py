@@ -57,7 +57,6 @@ class Rooms:
     def remove_room_id(self,username,friend):
         return self.users[username].pop(friend,None)
 
-
 sessions = {}
 sid_map = {}
 rooms = Rooms()
@@ -212,7 +211,6 @@ def logout_button():
     if not username:
         return redirect('/')
 
-
     return page_view("logout",username=username)
 
 # Check the login credentials
@@ -228,6 +226,123 @@ def logout_check():
     sessions.pop(user_session_id)
 
     return redirect("/")
+
+#-----------------------------------------------------------------------------
+# Account Settings
+#-----------------------------------------------------------------------------
+def account_settings():
+    '''
+        about
+        Returns the view for the account settings page
+    '''
+
+    return page_view("account_settings", username=authenticate_session())
+
+    
+#-----------------------------------------------------------------------------
+
+# Check the username
+def change_username(new_username, public_key):
+    '''
+        change_username
+        Checks usernames and passwords
+
+        :: username :: The username
+        :: password :: The password
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    username = authenticate_session()
+    print("old username = " + username)
+
+    """
+    if authenticate_session():
+        return redirect('/')
+        """
+
+    #Check if user is in database or not  
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+
+    if len(new_username) == 0 :
+        err_str = "Username cannot be empty. Please try again"
+        return page_view("account_settings", err_username=err_str, username=username)
+    
+    elif username == new_username:
+        err_str = "New username is the same as your current username. Choose a new username." 
+        return page_view("account_settings", err_username=err_str, username=username)
+    
+    elif no_sql_db.database.search_table_for_entry("users", "username", new_username):
+        err_str = "A user already exists with this username. Please choose a different username."
+        return page_view("account_settings", err_username=err_str, username=username)
+    
+    else:
+        #Remove current session and create a new one with the new public key
+        user_session_id = request.get_cookie("user_session_id")
+        sessions.pop(user_session_id)
+        no_sql_db.database.update_table_val('users', 'username', username, 'username', new_username)
+        create_session(new_username, public_key)
+
+        success_str = "Your username has been updated to: " + new_username 
+        return page_view("account_settings", success_username=success_str, username=new_username)
+
+#-----------------------------------------------------------------------------
+
+# Check the password
+def change_password(current_password, new_password):
+    '''
+        change_password
+        Checks usernames and passwords
+
+        :: username :: The username
+        :: password :: The password
+
+        Returns either a view for valid credentials, or a view for invalid credentials
+    '''
+    username = authenticate_session()
+
+    """
+    if authenticate_session():
+        return redirect('/')
+        """
+
+    #Check if user is in database or not  
+    current_user = no_sql_db.database.search_table_for_entry("users", "username", username)
+
+    # Find the old salt and hash the new password
+    new_key = hashlib.pbkdf2_hmac('sha256', current_password.encode('utf-8'), current_user[2], 100000)
+
+    # Salt and hash the new password
+    salt = os.urandom(32)
+    key = hashlib.pbkdf2_hmac('sha256', new_password.encode('utf-8'), salt, 100000)
+    
+    if current_user[1] == new_key:
+        if username == new_password:
+            err_str = "Username cannot be the same as new password" 
+            return page_view("account_settings", err_password=err_str, username=username)
+        
+        if current_password == new_password:
+            err_str = "New password is the same as your current password. Choose a new password." 
+            return page_view("account_settings", err_password=err_str, username=username)
+        
+        elif len(new_password) < MAX_PWD_LENGTH:
+            err_str = "New password must be at least 8 characters long. Please try again" 
+            return page_view("account_settings", err_password=err_str, username=username)
+        
+        elif re.compile('[^0-9a-zA-Z]+').search(new_password) == None:
+            err_str = "New password must contain a special character. Please try again" 
+            return page_view("account_settings", err_password=err_str, username=username)
+        
+        else:
+            no_sql_db.database.update_table_val('users', 'username', username, 'password', key)
+            no_sql_db.database.update_table_val('users', 'username', username, 'salt', salt)
+            
+            success_str = "Your password has been updated." 
+            return page_view("account_settings", success_password=success_str, username=username)
+    
+    else:
+        err_str = "Incorrect current password. Please try again"
+        return page_view("account_settings", err_password=err_str, username=username)
+    
 
 #-----------------------------------------------------------------------------
 # About

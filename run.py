@@ -201,6 +201,50 @@ def get_about():
     '''
     return model.about()
 
+@server.get('/account_settings')
+def get_account_settings():
+    '''
+        get_account_settings
+        
+        Serves the account_settings page
+    '''
+    return model.account_settings()
+
+# Attempt the username
+@server.post('/change_username')
+def post_change_username():
+    '''
+        post_login
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    new_username = request.forms.get('new_username')
+    public_key = request.forms.get('public_key')
+    
+    # Call the appropriate method
+    return model.change_username(new_username, public_key)
+
+# Attempt the change_password
+@server.post('/change_password')
+def post_change_password():
+    '''
+        post_login
+        
+        Handles login attempts
+        Expects a form containing 'username' and 'password' fields
+    '''
+
+    # Handle the form processing
+    current_password = request.forms.get('current_password')
+    new_password = request.forms.get('new_password')
+    
+    # Call the appropriate method
+    return model.change_password(current_password, new_password)
+
+
 @server.get('/friends')
 def get_friends():
     '''

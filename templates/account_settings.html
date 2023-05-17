@@ -1,0 +1,44 @@
+<p>Account Settings</p>
+</br>
+
+<p><strong>Change Username</strong></p>
+<p>Current username: {{username}}</p>
+<div>
+    <p>
+    <form id ="change_username_form" action="/change_username" method="post">
+        New username: <input name="new_username" type="text" />
+    </br></br>
+        <button type="submit">Change Username</button>
+    </form>
+    </p>
+</div>
+<script>generateRSA('change_username_form')</script>
+
+% if defined('success_username'):
+<p class="success">{{success_username}}</p>
+% end
+
+% if defined('err_username'):
+<p class="error">{{err_username}}</p>
+% end
+
+<p><strong>Change Password</strong></p>
+<div>
+    <p>
+    <form id ="change_password_form" action="/change_password" method="post">
+        Current password: <input name="current_password" type="password" />
+    </br></br>
+        New password: <input name="new_password" type="password" />
+    </br></br>
+        <button type="submit">Change Password</button>
+    </form>
+    </p>
+</div>
+
+% if defined('success_password'):
+<p class="success">{{success_password}}</p>
+% end
+
+% if defined('err_password'):
+<p class="error">{{err_password}}</p>
+% end
