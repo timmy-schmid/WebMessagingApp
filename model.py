@@ -443,7 +443,7 @@ def add_help_article(article_title, article_content):
     return page_view("help",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
 
 
-def knowledge():
+def knowledge(article_title):
     '''
         knowledge
         Returns the view for the knowledge base page
@@ -452,9 +452,37 @@ def knowledge():
 
     if not username:
         return redirect('/')
-    
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+
+    if article_title is not None:
+        article_content = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[1]
+        author = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[2]
+    else:
+        article_content = None
+        author = None      
+    return page_view("knowledge",article_title=article_title, article_content=article_content,author=author,articles=articles,username=username, admin=is_admin)
+
+def remove_knowledge_article(article_title):
     username, is_admin = authenticate_session()
-    return page_view("knowledge", username=username, admin=is_admin)    
+
+    if not username:
+        return redirect('/')
+
+    current_article = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)
+    no_sql_db.database.remove_table_entry('knowledge_articles', current_article)
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+def add_knowledge_article(article_title, article_content):
+    username, is_admin = authenticate_session()
+
+    if not username:
+        return redirect('/')
+    
+    no_sql_db.database.create_table_entry('knowledge_articles', [article_title,article_content, username])
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+    print("HI DO I GET HERE")
+    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
 
 
 #-----------------------------------------------------------------------------
@@ -497,13 +525,12 @@ def edit_users():
 
     current_user, is_admin = authenticate_session()
     
-
     if not current_user:
         return redirect('/')
     
     data = get_user_data(current_user)
 
-    return page_view("edit_users", user_list=data,username=current_user)
+    return page_view("edit_users", user_list=data,username=current_user, admin=is_admin)
 
 
 
