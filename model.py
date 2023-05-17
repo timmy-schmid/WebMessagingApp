@@ -378,28 +378,6 @@ def about():
     return page_view("about", garble=about_garble(),username=username, admin=is_admin)
 
 
-def help():
-    '''
-        help
-        Returns the view for the help page
-    '''
-
-    username, is_admin = authenticate_session()
-    return page_view("help", username=username, admin=is_admin)
-
-def knowledge():
-    '''
-        knowledge
-        Returns the view for the knowledge base page
-    '''
-    username, is_admin = authenticate_session()
-
-    if not username:
-        return redirect('/')
-    
-    username, is_admin = authenticate_session()
-    return page_view("knowledge", username=username, admin=is_admin)    
-
 # Returns a random string each time
 def about_garble():
     '''
@@ -426,14 +404,96 @@ def debug(cmd):
         pass
 
 #-----------------------------------------------------------------------------
+# Help & Knowledge articles
+#-----------------------------------------------------------------------------
+
+def help(article_title):
+    '''
+        help
+        Returns the view for the help page
+    '''
+    username, is_admin = authenticate_session()
+    articles = no_sql_db.database.select_all_table_values("help_articles", "title")
+
+    if article_title is not None:
+        article_content = no_sql_db.database.search_table_for_entry("help_articles", "title",article_title)[1]
+    else:
+        article_content = None       
+    return page_view("help",article_title=article_title, article_content=article_content,articles=articles,username=username, admin=is_admin)
+
+def remove_help_article(article_title):
+    username, is_admin = authenticate_session()
+
+    if not is_admin:
+        return redirect('/')
+
+    current_article = no_sql_db.database.search_table_for_entry("help_articles", "title",article_title)
+    no_sql_db.database.remove_table_entry('help_articles', current_article)
+    articles = no_sql_db.database.select_all_table_values("help_articles", "title")
+    return page_view("help",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+def add_help_article(article_title, article_content):
+    username, is_admin = authenticate_session()
+
+    if not is_admin:
+        return redirect('/')
+    
+    no_sql_db.database.create_table_entry('help_articles', [article_title,article_content])
+    articles = no_sql_db.database.select_all_table_values("help_articles", "title")
+    return page_view("help",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+
+def knowledge(article_title):
+    '''
+        knowledge
+        Returns the view for the knowledge base page
+    '''
+    username, is_admin = authenticate_session()
+
+    if not username:
+        return redirect('/')
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+
+    if article_title is not None:
+        article_content = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[1]
+        author = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[2]
+    else:
+        article_content = None
+        author = None      
+    return page_view("knowledge",article_title=article_title, article_content=article_content,author=author,articles=articles,username=username, admin=is_admin)
+
+def remove_knowledge_article(article_title):
+    username, is_admin = authenticate_session()
+
+    if not username:
+        return redirect('/')
+
+    current_article = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)
+    no_sql_db.database.remove_table_entry('knowledge_articles', current_article)
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+def add_knowledge_article(article_title, article_content):
+    username, is_admin = authenticate_session()
+
+    if not username:
+        return redirect('/')
+    
+    no_sql_db.database.create_table_entry('knowledge_articles', [article_title,article_content, username])
+    articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
+    print("HI DO I GET HERE")
+    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+
+#-----------------------------------------------------------------------------
 # Friends list
 #-----------------------------------------------------------------------------
 
 def get_user_data(current_user):
     data = no_sql_db.database.select_all_table_values("users","username")
-    data.remove([current_user])
+    data.remove(current_user)
     if current_user != "admin":
-        data.remove(["admin"])
+        data.remove("admin")
 
     return data
 
@@ -465,13 +525,13 @@ def edit_users():
 
     current_user, is_admin = authenticate_session()
     
-
     if not current_user:
         return redirect('/')
     
     data = get_user_data(current_user)
 
-    return page_view("edit_users", user_list=data,username=current_user)
+    return page_view("edit_users", user_list=data,username=current_user, admin=is_admin)
+
 
 
 def remove_user(user):

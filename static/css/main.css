@@ -12,19 +12,23 @@ html, body {
 }
 
 main {
-  margin: 5rem;
+  margin: 1.5rem;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 section {
-  padding: 4rem;
+  padding: 2rem;
 }
 
 main > * {
     margin: 0 auto;
     text-align: center;
+}
+
+a {
+  text-decoration: none;
 }
 
 
@@ -71,7 +75,6 @@ main > * {
 }
 
 .main-nav__item a {
-  text-decoration: none;
   display:inline-block;
   height: 0.1rem;
   color: white;
@@ -101,7 +104,6 @@ main > * {
   color: black;
   padding: 0.5rem 0.2rem;
   text-align: center;
-  text-decoration: none;
   display: block;
 }
 .form-login__forgot:hover {
@@ -136,8 +138,26 @@ main > * {
 }
 
 .form__field {
+  font-family: 'DM Sans', sans-serif;
+  border: 2px solid #ccc;
   padding: 1rem;
   margin: 0.8rem;
+}
+
+.form__txtarea {
+  font-family: 'DM Sans', sans-serif;
+  width: 100%;
+  height: 150px;
+  padding: 12px 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  resize: none;
+}
+
+.author {
+  color: blue;
+  font-style:italic;
 }
 
 .form__btn {
@@ -155,7 +175,28 @@ main > * {
   padding: 6px 16px;
   position: relative;
   text-align: center;
-  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.form__btn-remove {
+  max-width:200px;
+  appearance: none;
+  background-color: red; 
+  color: white;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
@@ -178,8 +219,40 @@ main > * {
   padding: 2rem;
 }
 
-
 /* CONTENT */
+
+.help-section {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+.help-section sidebar {
+  padding: 1rem;
+  color: black;
+  max-width: 300px;
+
+}
+
+.help-section sidebar a {
+  color: black;
+}
+
+.help-section sidebar a:hover {
+  color: #3e8e41;
+}
+
+
+.help-section article {
+  padding: 1rem;
+  flex: 1;
+  text-align: left;
+}
+
+hr {
+  border-top: 1px solid black;
+  width:100%;
+}
 
 .img-feature {
   width: 50%;
@@ -225,14 +298,13 @@ main > * {
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-family: font-family: 'DM Sans', sans-serif;
+    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
     padding: 6px 16px;
     position: relative;
     text-align: center;
-    text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -251,14 +323,13 @@ main > * {
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
     padding: 6px 16px;
     position: relative;
     text-align: center;
-    text-decoration: none;
     user-select: none;
     -webkit-user-select: none;
     touch-action: manipulation;
@@ -272,23 +343,3 @@ main > * {
   display:inline-block;
   filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(284deg) brightness(108%) contrast(101%);
 }
-
-/*button {
-    appearance: none;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 6px;
-    display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-
-    text-decoration: none;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-}*/

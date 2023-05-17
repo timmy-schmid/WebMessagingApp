@@ -69,7 +69,7 @@ class Table():
         return None
     
     def select_all_table_values(self,target_field_name):
-        return [[val[self.fields.index(target_field_name)]] for val in self.entries]
+        return [val[self.fields.index(target_field_name)] for val in self.entries]
     
 
     #returns the number of fields updated
@@ -94,6 +94,42 @@ class DB():
 
         # Setup your tables
         self.add_table('users',"username", "password", "salt",'public_key', 'is_admin')
+
+
+        '''
+            hard coded users
+        '''
+
+        import os
+        import hashlib
+        salt = os.urandom(32)
+        key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
+        self.create_table_entry('users', ["Bob",key,salt,'',False])
+        self.create_table_entry('users', ["Alice",key,salt,'',False])
+        self.create_table_entry('users', ["James",key,salt,'',False])
+
+
+        '''
+            hard coded help articles
+
+        '''
+        self.add_table('help_articles',"title", "content")
+        self.create_table_entry('help_articles', ["Is the chat system secure?","chat system Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
+        self.create_table_entry('help_articles', ["How do I change my password?"," password Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
+        self.create_table_entry('help_articles', ["How do I use a screenreader for accessibility?","screenreader Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
+        
+        '''
+            hard coded kx articles
+
+        '''
+        self.add_table('knowledge_articles',"title", "content", "author")
+        self.create_table_entry('knowledge_articles', ["The History of Cybersecurity","chat system Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","Bob"])
+        self.create_table_entry('knowledge_articles', ["Algorithms and Datastructure Essentials"," password Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","Alice"])
+        self.create_table_entry('knowledge_articles', ["How to create Custom CSS Forms","screenreader Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","James"])
+        self.create_table_entry('knowledge_articles', ["Python 101","chat system Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","James"])
+        self.create_table_entry('knowledge_articles', ["Help! My assignment won't compile :("," password Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","Alice"])
+        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing tutors?","screenreader Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","Alice"])
+        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","screenreader Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus.","Admin"])
         return
 
     def add_table(self, table_name, *table_fields):

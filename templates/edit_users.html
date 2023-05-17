@@ -4,22 +4,14 @@
 
     <table class="friends_list">
         % for user in user_list:
-            <tr>
-            %for field in user:
                 <form id ="user_form" action="/edit_user" method="post" onsubmit="return submitForm(this);">
-                    <center>
-                    <a>{{field}}</a>
-                    
-                    <input class="form__btn" type="hidden" name="user" value={{field}}>
-                    <input class="form__btn" type="submit" name="remove" value="Remove user" />
-                    <input class="form__btn" type="submit" name="mute" value="Mute user" />
-                    
-                    </center>
+                        {{user}}
+                        <input class="form__btn" type="hidden" name="user" value={{user}}>
+                        <input class="form__btn" type="submit" name="remove" value="Remove user" />
+                        <input class="form__btn" type="submit" name="mute" value="Mute user" />
                     
                 </br>
                 </form>
-            % end
-            </tr>
         % end
         </table>
 

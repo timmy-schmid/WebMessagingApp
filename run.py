@@ -254,6 +254,24 @@ def get_friends():
     '''
     return model.friends_list()
 
+@server.post('/help')
+def post_help():
+    '''
+        post_help
+        
+        Handles additions and deletions of articles
+    '''
+    # Handle the form processing
+    article_title = request.forms.get('article_title')
+    # Call the appropriate method
+    if request.forms.get("remove") == "remove":
+        return model.remove_help_article(article_title)
+    
+    if request.forms.get("add") == "add":
+        article_conent = request.forms.get('article_content')
+        return model.add_help_article(article_title,article_conent)
+    
+
 @server.get('/help')
 def get_help():
     '''
@@ -261,16 +279,35 @@ def get_help():
         
         Serves the help / FAQ page.
     '''
-    return model.help()
+    article = request.query.get('article')
+    return model.help(article)
+
+@server.post('/knowledge')
+def post_knowledge():
+    '''
+        post_knowledge
+        
+        Handles additions and deletions of articles of knowledge page
+    '''
+    # Handle the form processing
+    article_title = request.forms.get('article_title')
+    # Call the appropriate method
+    if request.forms.get("remove") == "remove":
+        return model.remove_knowledge_article(article_title)
+    
+    if request.forms.get("add") == "add":
+        article_conent = request.forms.get('article_content')
+        return model.add_knowledge_article(article_title,article_conent)
 
 @server.get('/knowledge')
-def get_help():
+def get_knowledge():
     '''
         knowledge
         
         Serves the knowledge base page.
     '''
-    return model.knowledge()
+    article = request.query.get('article')
+    return model.knowledge(article)
 
 @server.get('/edit_users')
 def get_edit_users():
