@@ -92,7 +92,11 @@ def index():
         index
         Returns the view for the index
     '''
-    return page_view("index",username=authenticate_session(), admin=False)
+    if authenticate_session() == False:
+        return page_view("index",username=authenticate_session(), admin=False)
+    
+    username, is_admin = authenticate_session()
+    return page_view("index",username=username, admin=is_admin)
         
 
 #-----------------------------------------------------------------------------
