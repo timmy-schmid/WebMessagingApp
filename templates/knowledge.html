@@ -1,0 +1,29 @@
+<h1>KNOWLEDGE REPOSITORY</h1>
+<p>Welcome to the Knowledge repository. This section is for yourself and fellow peers to share reading and learning materials</p>
+
+<section class="help-section">
+    <sidebar>
+        % for article in articles:
+            <a href="knowledge?article={{article}}"><h3>{{article}}</h3></a>
+        % end
+    </sidebar>
+    <article>
+        %if article_content is not None:
+            <h1>{{article_title}}</h1>
+            <p class="author">posted by {{author}}</p>
+            <p>{{article_content}}</p>
+        % if (defined('admin') and admin is True) or (username == author):
+        <form action="/knowledge" method="post">
+            <input type="hidden" name="article_title" value="{{article_title}}">
+            <button class="form__btn-remove" name="remove" value="remove" type="submit"><i class="fa-solid fa-x"></i> Delete Article</button>
+        </form>
+        %end
+        %end
+    </article>
+</section>
+<hr>
+<form action="/knowledge" method="post">
+    <input class="form__field" name="article_title" placeholder="Article Title">
+    <textarea class="form__txtarea" name="article_content" placeholder="Article Content"></textarea>
+    <button class="form__btn" name="add" value="add" type="submit">Add New Article</button>
+</form>

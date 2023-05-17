@@ -1,0 +1,30 @@
+<h1>HELP CENTRE</h1>
+<p>Welcome to the help center. Search here for FAQs, for any queries that you might have about our product and service!</p>
+<section class="help-section">
+    <sidebar>
+        % for article in articles:
+            <a href="help?article={{article}}"><h3>{{article}}</h3></a>
+        % end
+    </sidebar>
+    <article>
+        %if article_content is not None:
+            <h1>{{article_title}}</h1>
+            <p>{{article_content}}</p>
+        % if defined('admin') and admin is True:
+        <form action="/help" method="post">
+            <input type="hidden" name="article_title" value="{{article_title}}">
+            <button class="form__btn-remove" name="remove" value="remove" type="submit"><i class="fa-solid fa-x"></i> Delete Article</button>
+        </form>
+        %end
+        %end
+    </article>
+</section>
+% if defined('admin') and admin is True:
+<hr>
+<form action="/help" method="post">
+
+    <input class="form__field" name="article_title" placeholder="Article Title">
+    <textarea class="form__txtarea" name="article_content" placeholder="Article Content"></textarea>
+    <button class="form__btn" name="add" value="add" type="submit">Add New Article</button>
+</form>
+%end
