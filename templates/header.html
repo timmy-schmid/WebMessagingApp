@@ -1,33 +1,45 @@
-<head>
-  <link rel="stylesheet" type="text/css" href="css/temp.css">
-  <script type="text/javascript" src="/js/jsencrypt.min.js" charset="utf-8"></script>
-  <script type="text/javascript" src="/js/rsa.js" charset="utf-8"></script>
-  <title>Simple Student Templating Solutions</title>
-</head>
+<!DOCTYPE html>
+<html lang="en">
 
-<body>
-  <p>
-    <div>
-  <ul>
-    <li><a class="active" href="/home">Home</a></li>
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="css/temp.css">
+    <script src="https://kit.fontawesome.com/d02937ed51.js" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="/js/jsencrypt.min.js" charset="utf-8"></script>
+    <script type="text/javascript" src="/js/rsa.js" charset="utf-8"></script>
+    <title>Simple Student Templating Solutions</title>
+  </head>
 
-    % if not defined('username') or username is False:
-
-    <li><a href="/create_user">Create user</a></li>
-    <li><a href="/login">Login</a></li>
-    % else:
-      <li><a href="/logout">Logout</a></li>
-      <li><a href="/friends">Friends</a></li> 
-      <li><a href="/account_settings">Account Settings</a></li> 
-      <li style="float:right">Welcome {{username}}</li>
-    % end
-    <li><a href="/about">About</a></li>
-    <!-- <li><a href="/friends">Friends</a></li> -->
-  </ul>
-  </p>
-  <main>
-    <h2>Simple Student Templating Solutions</h2>
-    </br>
-    <h3><i>Because the usability is more important than the back end for now.</i></h3>
-    </br>
-    <!--<img src="img/header.jpg" alt="Some stuff that popped out of tensor flow" height="30%">-->
+  <body>
+      <header class="main-header">
+        <nav class="main-nav">
+          <a href="/home" class="main-header__brand">
+            <img src="img/logo_nav.png" alt="brand logo">
+          </a>
+          <ul class="main-nav__items">
+            <li class="main-nav__item" ><a href="/about">About</a></li>
+            % if not defined('username') or username is False:
+            <li class="main-nav__item"><a href="/create_user">Create user</a></li>
+            <li class="main-nav__item"><a href="/login">Login</a></li>
+            % else:
+              <li class="main-nav__item"><a href="/logout">Logout</a></li>
+              <li class="main-nav__item"><a href="/friends">Friends</a></li>
+              <li><a href="/account_settings">Account Settings</a></li> 
+            % end
+          </ul>
+        </nav>
+        <div class="dropdown">
+          <button class="dropbtn"></i> Welcome {{username}} <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
+          <div class="dropdown-content">
+            <a href="#"><i class="fa-solid fa-gear" style=" vertical-align: middle;"></i> Account Settings</a>
+            <a href="#">Logout</a>
+          </div>
+        </div>
+      </header>
+    <main>
+      <h2>Simple Student Templating Solutions</h2>
+      </br>
+      <h3><i>Because the usability is more important than the back end for now.</i></h3>
+      </br>

@@ -1,6 +1,6 @@
 To run the application, first ensure all requirements are downloaded. Then run: 
 
-  python3 app.py
+  python3 run.py
 
 This will launch the server at https://127.0.0.1:8080 
 
