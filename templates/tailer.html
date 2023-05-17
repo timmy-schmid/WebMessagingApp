@@ -1,79 +1,80 @@
 
-    </main>
-    <ul>
-        <li><a></a></li>
-    </ul>
+      </main>
+      <ul>
+          <li><a></a></li>
+      </ul>
 
-    <!-- Client Side Socket handling-->
-    % if defined('chat') and chat == True:
-    <script type="text/javascript" src="/js/socket.io.js" charset="utf-8"></script>
+      <!-- Client Side Socket handling-->
+      % if defined('chat') and chat == True:
+      <script type="text/javascript" src="/js/socket.io.js" charset="utf-8"></script>
 
-        <script type="text/javascript">
+          <script type="text/javascript">
 
-        let friend_pk = '';
+          let friend_pk = '';
 
-        const socket = io.connect();
+          const socket = io.connect();
 
-        socket.on('connect', function() {
-            socket.emit('join_chat', {
-              friend: "{{ friend }}"
-            });
-        });
+          socket.on('connect', function() {
+              socket.emit('join_chat', {
+                friend: "{{ friend }}"
+              });
+          });
 
-        let msg_input = document.getElementById('msg_input');
-        document.getElementById('msg_input_form').onsubmit = function(event) {
-            let msg = msg_input.value.trim();
-            if (msg.length) {
-                
-                var encrypt = new JSEncrypt();
-                encrypt.setPublicKey(friend_pk);
-                encrypted_msg = encrypt.encrypt(msg)
-                socket.emit('send_msg', {
-                    username: "{{ username }}",
-                    friend: "{{ friend }}",
-                    msg: encrypted_msg
-                })
-                const newDiv = document.createElement('div')
-                newDiv.innerHTML = `<b>{{username}}:&nbsp;</b> ${msg}`;
-                document.getElementById('messages').appendChild(newDiv);
-            }
-            return false;
-        } 
-        msg_input.value = '';
-        msg_input.focus(); 
+          let msg_input = document.getElementById('msg_input');
+          document.getElementById('msg_input_form').onsubmit = function(event) {
+              let msg = msg_input.value.trim();
+              if (msg.length) {
+                  
+                  var encrypt = new JSEncrypt();
+                  encrypt.setPublicKey(friend_pk);
+                  encrypted_msg = encrypt.encrypt(msg)
+                  socket.emit('send_msg', {
+                      username: "{{ username }}",
+                      friend: "{{ friend }}",
+                      msg: encrypted_msg
+                  })
+                  const newDiv = document.createElement('div')
+                  newDiv.innerHTML = `<b>{{username}}:&nbsp;</b> ${msg}`;
+                  document.getElementById('messages').appendChild(newDiv);
+              }
+              return false;
+          } 
+          msg_input.value = '';
+          msg_input.focus(); 
 
-        document.getElementById('close').onclick = function(event) {
-            socket.emit('leave_chat', {
-                    username: "{{ username }}",
-                    friend: "{{ friend }}",
-                })
-        }
+          document.getElementById('close').onclick = function(event) {
+              socket.emit('leave_chat', {
+                      username: "{{ username }}",
+                      friend: "{{ friend }}",
+                  })
+          }
 
-        socket.on('recieve_msg', function(data) {
-            const newDiv = document.createElement('div')
-            var decrypt = new JSEncrypt();
-            decrypt.setPrivateKey(localStorage.RSASecretKey);
-            var unencrypted = decrypt.decrypt(data.msg);
-            newDiv.innerHTML = `<b>${data.username}:&nbsp;</b> ${unencrypted}`;
-            document.getElementById('messages').appendChild(newDiv);
-        });
+          socket.on('recieve_msg', function(data) {
+              const newDiv = document.createElement('div')
+              var decrypt = new JSEncrypt();
+              decrypt.setPrivateKey(localStorage.RSASecretKey);
+              var unencrypted = decrypt.decrypt(data.msg);
+              newDiv.innerHTML = `<b>${data.username}:&nbsp;</b> ${unencrypted}`;
+              document.getElementById('messages').appendChild(newDiv);
+          });
 
-        socket.on('join_announcement', function(data) {
-            const newDiv = document.createElement('div')
-            newDiv.innerHTML = `<b>${data.username}</b> has joined the room`;
-            document.getElementById('messages').appendChild(newDiv);
-            if (data.friend_pk != localStorage.RSAPublicKey) {
-                friend_pk = data.friend_pk;
-            }
-        });
+          socket.on('join_announcement', function(data) {
+              const newDiv = document.createElement('div')
+              newDiv.innerHTML = `<b>${data.username}</b> has joined the room`;
+              document.getElementById('messages').appendChild(newDiv);
+              if (data.friend_pk != localStorage.RSAPublicKey) {
+                  friend_pk = data.friend_pk;
+              }
+          });
 
-        socket.on('leave_announcement', function(data) {
-            const newDiv = document.createElement('div')
-            newDiv.innerHTML = `<b>${data.username}</b> has left the room`;
-            document.getElementById('messages').appendChild(newDiv);
-        });
+          socket.on('leave_announcement', function(data) {
+              const newDiv = document.createElement('div')
+              newDiv.innerHTML = `<b>${data.username}</b> has left the room`;
+              document.getElementById('messages').appendChild(newDiv);
+          });
 
-    </script>
-    %end
+      </script>
+      %end
 
-</body>
+  </body>
+</html>
