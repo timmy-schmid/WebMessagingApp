@@ -5,11 +5,11 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="css/temp.css">
+    <link rel="stylesheet" type="text/css" href="css/main.css">
     <script src="https://kit.fontawesome.com/d02937ed51.js" crossorigin="anonymous"></script>
     <script type="text/javascript" src="/js/jsencrypt.min.js" charset="utf-8"></script>
     <script type="text/javascript" src="/js/rsa.js" charset="utf-8"></script>
-    <title>Simple Student Templating Solutions</title>
+    <title>Secure Chat</title>
   </head>
 
   <body>
@@ -19,27 +19,41 @@
             <img src="img/logo_nav.png" alt="brand logo">
           </a>
           <ul class="main-nav__items">
-            <li class="main-nav__item" ><a href="/about">About</a></li>
-            % if not defined('username') or username is False:
-            <li class="main-nav__item"><a href="/create_user">Create user</a></li>
-            <li class="main-nav__item"><a href="/login">Login</a></li>
-            % else:
-              <li class="main-nav__item"><a href="/logout">Logout</a></li>
+            <li class="main-nav__item"><a href="/about">About</a></li>
+            <li class="main-nav__item"><a href="/help">Help</a></li>
+            % if defined('username') and username is not False:
+            <li class="main-nav__item"><a href="/knowledge">Knowledge Base</a></li>
               <li class="main-nav__item"><a href="/friends">Friends</a></li>
-              <li><a href="/account_settings">Account Settings</a></li> 
             % end
+
+            % if defined('admin') and admin is True:
+            <li class="main-nav__item"><a href="/edit_users">Edit Users</a></li>
+            % end
+
           </ul>
         </nav>
-        <div class="dropdown">
-          <button class="dropbtn"></i> Welcome {{username}} <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
-          <div class="dropdown-content">
-            <a href="#"><i class="fa-solid fa-gear" style=" vertical-align: middle;"></i> Account Settings</a>
-            <a href="#">Logout</a>
+        <div class="main-dropdown">
+          % if not defined('username') or username is False:
+          <button class="main-dropdown__button"></i> Login / New User <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
+          <div class="main-dropdown__content">
+            <form class ="form-login" action="/login" method="post">
+              <input class="form__field" name="username" type="text" placeholder="Username"/>
+              <input class="form__field" name="password" type="password" placeholder="Password"/>
+              <button class="form__btn" type="submit">Login</button>
+              <a href="/home" class="form-login__forgot">Forgot Username or Password?</a>
+              <a href="/create_user" class="form__btn">Join Now</a>
+            </form>
           </div>
+          % else:
+          <button class="main-dropdown__button"></i> Welcome {{username}} <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
+          <div class="main-dropdown__content">
+            <form class ="form-login" action="/logout" method="post">
+              <a href="/account_settings" class="form__btn"><i class="fa-solid fa-gear" style=" vertical-align: middle;"></i> Account Settings</a>
+              <button class="form__btn" type="submit">Logout</button>
+            </form>
+          </div>
+          % end
         </div>
       </header>
     <main>
-      <h2>Simple Student Templating Solutions</h2>
-      </br>
-      <h3><i>Because the usability is more important than the back end for now.</i></h3>
-      </br>
+      <img class="img-feature" src="img/logo.png">

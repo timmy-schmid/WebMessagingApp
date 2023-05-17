@@ -1,33 +1,35 @@
-<p>Account Settings</p>
-</br>
+<section>
+    <h1>Account Settings</h1>
+    </br>
 
-<table class="friends_list">
-    % for user in user_list:
-        <tr>
-        %for field in user:
-            <form id ="user_form" action="/edit_user" method="post" onsubmit="return submitForm(this);">
-                <center>
-                <a>{{field}}</a>
-                
-                <input type="hidden" name="user" value={{field}}>
-                <input type="submit" name="remove" value="Remove user" />
-                <input type="submit" name="mute" value="Mute user" />
-                
-                </center>
-                
-            </br>
-            </form>
+    <table class="friends_list">
+        % for user in user_list:
+            <tr>
+            %for field in user:
+                <form id ="user_form" action="/edit_user" method="post" onsubmit="return submitForm(this);">
+                    <center>
+                    <a>{{field}}</a>
+                    
+                    <input class="form__btn" type="hidden" name="user" value={{field}}>
+                    <input class="form__btn" type="submit" name="remove" value="Remove user" />
+                    <input class="form__btn" type="submit" name="mute" value="Mute user" />
+                    
+                    </center>
+                    
+                </br>
+                </form>
+            % end
+            </tr>
         % end
-        </tr>
+        </table>
+
+    <script>
+        function submitForm() {
+            return confirm("Are you sure that you want to remove/mute this user?");
+        }
+    </script>
+
+    % if defined('success'):
+    <p class="success">{{success}}</p>
     % end
-    </table>
-
-<script>
-    function submitForm() {
-        return confirm("Are you sure that you want to remove/mute this user?");
-    }
-</script>
-
-% if defined('success'):
-<p class="success">{{success}}</p>
-% end
+</section>

@@ -1,11 +1,14 @@
-<p>Here are your friends. Click on someone to message them:</p> <br/><br/>
 
-<table class="friends_list">
-% for friend in friends_list:
-    <tr>
-    %for field in friend:
-        <td><a href="chat?friend={{field}}">{{field}}</a></td>
+<section>
+    <h1>Here are your friends. Click on someone to message them:</h1>
+
+    <table class="friends_list">
+    % for friend in friends_list:
+        <tr>
+        %for field in friend:
+            <td><a href="chat?friend={{field}}">{{field}}</a></td>
+        % end
+        </tr>
     % end
-    </tr>
-% end
-</table>
+    </table>
+</section>

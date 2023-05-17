@@ -1,22 +1,24 @@
-<h1>Chat Room</h1>
-</br>
-<p> Hi {{username}} you are now chatting with {{friend}}</p>
+<section>
+    <h1>Chat Room</h1>
+    </br>
+    <p> Hi {{username}} you are now chatting with {{friend}}</p>
 
-<div id="messages">
+    <div id="messages">
 
-</div>
+    </div>
 
-</br></br></br>
+    </br></br></br>
 
-<div>
-    <form action="/chat" id="msg_input_form" method="post">
-        <input type="text" id="msg_input" placeholder="Enter your message here"/>
-    </br>        </br>
-        <button type="submit">Send</button>
+    <div>
+        <form action="/chat" id="msg_input_form" method="post">
+            <input type="text" id="msg_input" placeholder="Enter your message here"/>
+        </br>        </br>
+            <button class="form__btn" type="submit">Send</button>
 
-    </form>
+        </form>
 
-    <form action="/chat" method="post">
-        <button id="close" type="submit">Leave Room</button>
-    </form>
-</div>
+        <form action="/chat" method="post">
+            <button class="form__btn" id="close" type="submit">Leave Room</button>
+        </form>
+    </div>
+</section>

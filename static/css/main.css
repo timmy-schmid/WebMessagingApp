@@ -11,11 +11,15 @@ html, body {
     padding: 0;
 }
 
-.chat_window {
-    height: 50%;
-    border: black solid 0.4rem;
-    margin: 2rem;
-    padding: 2rem;
+main {
+  margin: 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+section {
+  padding: 4rem;
 }
 
 main > * {
@@ -23,12 +27,10 @@ main > * {
     text-align: center;
 }
 
-.success {
-    color: green;
-=======
+
+/* MAIN HEADER */
 .main-nav {
   display: flex;
-  flex-basis: 60%;
 }
 
 .main-header {
@@ -64,8 +66,7 @@ main > * {
 }
 
 .main-nav__item {
-  padding: 0;
-  flex: 1 1 auto;
+  padding: 0 1rem;
   color: white;
 }
 
@@ -80,8 +81,128 @@ main > * {
   color: teal;
 }
 
+.main-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.main-dropdown__content {
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  position: absolute;
+  background-color: #f1f1f1;
+  width: 100%;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+.form-login__forgot {
+  color: black;
+  padding: 0.5rem 0.2rem;
+  text-align: center;
+  text-decoration: none;
+  display: block;
+}
+.form-login__forgot:hover {
+  font-weight: bold;
+  color: #1c4220;
+  background-color: #e4e3e3; 
+}
+
+.main-dropdown__button {
+  min-width: 200px;
+  height:68.48px;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: #fff;
+  text-align: center;
+  padding: 0 2rem;
+}
+
+/* Show the dropdown menu on hover */
+.main-dropdown:hover .main-dropdown__content {display: flex;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.main-dropdown:hover .main-dropdown__button {background-color: #3e8e41;}
+
+.form-login {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form__field {
+  padding: 1rem;
+  margin: 0.8rem;
+}
+
+.form__btn {
+  margin: 0.8rem;
+  appearance: none;
+  background-color: #3e8e41; 
+  color: white;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.form__btn a {
+  color: white
+}
+
+.form__btn:hover {
+  background-color: #1c4220;  
+}
+
+.chat_window {
+  height: 50%;
+  border: black solid 0.4rem;
+  margin: 2rem;
+  padding: 2rem;
+}
+
+
+/* CONTENT */
+
+.img-feature {
+  width: 50%;
+  max-width: 200px;
+}
+
+.vid-feature {
+  width: 80%;
+  max-width: 700px;
+}
+
+.index-title {
+  padding: 2rem;
+  color: green;
+}
+
+
+.success {
+    color: green;
+}
+
 .error {
-    color: red;
+  color: red;
 }
 
 .friends_list {
@@ -94,7 +215,6 @@ main > * {
     color: black;         
 }
 
-<<<<<<< HEAD
 .remove {
     appearance: none;
     background-color: #d32323;
@@ -105,7 +225,7 @@ main > * {
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-family: -apple-system,system-ui,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji";
+    font-family: font-family: 'DM Sans', sans-serif;
     font-size: 14px;
     font-weight: 600;
     line-height: 20px;
@@ -147,59 +267,13 @@ main > * {
     margin-left: 5px;
 }
 
-button {
-=======
-.dropbtn {
-  height:68.48px;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  font-family: 'DM Sans', sans-serif;
-  font-size: 1rem;
-  color: #fff;
-  text-align: center;
-  padding: 0 2rem;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-content {
-  display: none;
-  position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1;
-}
-
-.dropdown-content a {
-  color: black;
-  padding: 0.5rem 0.2rem;
-  text-align: center;
-  text-decoration: none;
-  display: block;
-}
-
 .img-settings {
   width: 1rem;
   display:inline-block;
   filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(284deg) brightness(108%) contrast(101%);
 }
 
-/* Change color of dropdown links on hover */
-.dropdown-content a:hover {background-color: #ddd;}
-
-/* Show the dropdown menu on hover */
-.dropdown:hover .dropdown-content {display: block;}
-
-/* Change the background color of the dropdown button when the dropdown content is shown */
-.dropdown:hover .dropbtn {background-color: #3e8e41;}
-
 /*button {
->>>>>>> main
     appearance: none;
     border: 1px solid rgba(27, 31, 35, .15);
     border-radius: 6px;
@@ -218,5 +292,3 @@ button {
     vertical-align: middle;
     white-space: nowrap;
 }*/
-
-
