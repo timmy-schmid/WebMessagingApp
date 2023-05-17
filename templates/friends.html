@@ -5,9 +5,7 @@
     <table class="friends_list">
     % for friend in friends_list:
         <tr>
-        %for field in friend:
-            <td><a href="chat?friend={{field}}">{{field}}</a></td>
-        % end
+            <td><a href="chat?friend={{friend}}">{{friend}}</a></td>
         </tr>
     % end
     </table>
