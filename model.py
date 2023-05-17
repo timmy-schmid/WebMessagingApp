@@ -80,7 +80,7 @@ def authenticate_session():
 
     user_session_id = request.get_cookie("user_session_id")
     if user_session_id not in sessions:
-        return False
+        return False, False
     else:
         current_user = no_sql_db.database.search_table_for_entry("users", "username", sessions[user_session_id])
         return sessions[user_session_id], current_user[4]
@@ -91,8 +91,8 @@ def index():
         index
         Returns the view for the index
     '''
-    if authenticate_session() == False:
-        return page_view("index",username=authenticate_session(), admin=False)
+    if authenticate_session()[0] == False:
+        return page_view("index",username=authenticate_session()[0], admin=False)
     
     username, is_admin = authenticate_session()
     return page_view("index",username=username, admin=is_admin)
@@ -108,7 +108,7 @@ def create_user_form():
         Returns the view for the create_user_form
     '''
 
-    if authenticate_session():
+    if authenticate_session()[0]:
         return redirect('/')
 
     return page_view("create_user")
@@ -126,7 +126,7 @@ def create_user(username, password, public_key):
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
 
-    if authenticate_session():
+    if authenticate_session()[1]:
         return redirect('/')
     
     # Salt and hash the password
@@ -164,7 +164,7 @@ def login_form():
         Returns the view for the login_form
     '''
 
-    if authenticate_session():
+    if authenticate_session()[0]:
         return redirect('/')
 
     return page_view("login")
@@ -182,7 +182,7 @@ def login_check(username, password, public_key):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
-    if authenticate_session():
+    if authenticate_session()[0]:
         return redirect('/')
 
     #Check if user is in database or not  
@@ -240,7 +240,7 @@ def logout_check():
         logout_check
         Checks user has been logged out
     '''
-    if not authenticate_session():
+    if not authenticate_session()[0]:
         return redirect('/')
 
     user_session_id = request.get_cookie("user_session_id")
@@ -321,7 +321,7 @@ def change_password(current_password, new_password):
     '''
     username = authenticate_session()
 
-    if authenticate_session():
+    if authenticate_session()[0]:
         return redirect('/')
         
 
@@ -373,10 +373,32 @@ def about():
         about
         Returns the view for the about page
     '''
-    username, is_admin = authenticate_session()
 
+    username, is_admin = authenticate_session()
     return page_view("about", garble=about_garble(),username=username, admin=is_admin)
 
+
+def help():
+    '''
+        help
+        Returns the view for the help page
+    '''
+
+    username, is_admin = authenticate_session()
+    return page_view("help", username=username, admin=is_admin)
+
+def knowledge():
+    '''
+        knowledge
+        Returns the view for the knowledge base page
+    '''
+    username, is_admin = authenticate_session()
+
+    if not username:
+        return redirect('/')
+    
+    username, is_admin = authenticate_session()
+    return page_view("knowledge", username=username, admin=is_admin)    
 
 # Returns a random string each time
 def about_garble():

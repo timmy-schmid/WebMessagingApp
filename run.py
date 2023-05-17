@@ -254,6 +254,24 @@ def get_friends():
     '''
     return model.friends_list()
 
+@server.get('/help')
+def get_help():
+    '''
+        get_help
+        
+        Serves the help / FAQ page.
+    '''
+    return model.help()
+
+@server.get('/knowledge')
+def get_help():
+    '''
+        knowledge
+        
+        Serves the knowledge base page.
+    '''
+    return model.knowledge()
+
 @server.get('/edit_users')
 def get_edit_users():
     '''
