@@ -57,7 +57,6 @@ class Rooms:
     def remove_room_id(self,username,friend):
         return self.users[username].pop(friend,None)
 
-
 sessions = {}
 sid_map = {}
 rooms = Rooms()
