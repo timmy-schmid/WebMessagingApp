@@ -417,6 +417,7 @@ def help(article_title):
 
     if article_title is not None:
         article_content = no_sql_db.database.search_table_for_entry("help_articles", "title",article_title)[1]
+        print(article_content)
     else:
         article_content = None       
     return page_view("help",article_title=article_title, article_content=article_content,articles=articles,username=username, admin=is_admin)

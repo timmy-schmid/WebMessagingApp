@@ -268,8 +268,8 @@ def post_help():
         return model.remove_help_article(article_title)
     
     if request.forms.get("add") == "add":
-        article_conent = request.forms.get('article_content')
-        return model.add_help_article(article_title,article_conent)
+        article_content = request.forms.get('article_content')
+        return model.add_help_article(article_title,article_content)
     
 
 @server.get('/help')

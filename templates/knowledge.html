@@ -11,7 +11,7 @@
         %if article_content is not None:
             <h1>{{article_title}}</h1>
             <p class="author">posted by {{author}}</p>
-            <p>{{article_content}}</p>
+            <p>{{ !article_content}}</p>
         % if (defined('admin') and admin is True) or (username == author):
         <form action="/knowledge" method="post">
             <input type="hidden" name="article_title" value="{{article_title}}">
