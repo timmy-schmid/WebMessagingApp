@@ -10,8 +10,14 @@
     <article>
         %if article_content is not None:
             <h1>{{article_title}}</h1>
-            <p class="author">posted by {{author}}</p>
-            <p>{{ !article_content}}</p>
+            %if (defined('anonymous') and anonymous is True):
+                <p class="author">posted by Anonymous</p>
+            % else:
+                <p class="author">posted by {{author}}</p>
+            
+            %end
+            <p>{{!article_content}}</p>
+
         % if (defined('admin') and admin is True) or (username == author):
         <form action="/knowledge" method="post">
             <input type="hidden" name="article_title" value="{{article_title}}">
@@ -25,5 +31,9 @@
 <form action="/knowledge" method="post">
     <input class="form__field" name="article_title" placeholder="Article Title">
     <textarea class="form__txtarea" name="article_content" placeholder="Article Content"></textarea>
+
+    <input type="checkbox" id="is_anonymous" name="is_anonymous" value="True">
+    <label for="is_anonymous"> Anonymous</label><br>
+
     <button class="form__btn" name="add" value="add" type="submit">Add New Article</button>
 </form>

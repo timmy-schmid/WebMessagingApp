@@ -122,7 +122,7 @@ class DB():
             hard coded kx articles
 
         '''
-        self.add_table('knowledge_articles',"title", "content", "author")
+        self.add_table('knowledge_articles',"title", "content", "author", "anonymous")
 
         self.create_table_entry('knowledge_articles', ["Agile Team Roles and Responsibilities","I recently completed a huge project where we worked in Agile teams. For anyone wondering this is the breakdown of the Agile roles." +
                                                         "<h3>Scrum Master or Agile Team Leader</h3>" +
@@ -152,13 +152,13 @@ class DB():
                                                             "<li>Write unit tests</li>" +
                                                             "<li>Checking the code into the version control system for each build</li>" +
                                                         "</ul>"
-                                                        ,"Steven"])
+                                                        ,"Steven", False])
         self.create_table_entry('knowledge_articles', ["Help! My assignment won't compile :(","I've been trying to fix it for ages but keep getting this error message:\n"
                                                        "<p>,\"Bob\"])" + \
                                                         "<p>^" + \
                                                         "<p>SyntaxError: invalid syntax" + \
                                                         "<p>Does anyone have any advice? If you do please message me!"
-                                                        ,"Alice"])
+                                                        ,"Alice", False])
         self.create_table_entry('knowledge_articles', ["Algorithms and Datastructure Essentials", "Here is a small table with the key data structures and information on each.\n" +  
                                                        "<h2>Part 1</h2>" + 
                                                        "<table style=\"width:100%\" border=\"1px solid black\">" +
@@ -249,8 +249,8 @@ class DB():
                                                             "<td>Algorithm doesn't take extra space, but the tree is still O(n + m) </td>" + 
                                                             "<td>Depends on the task</td>" + 
                                                         "</tr>" +
-                                                        "</table>","Alice"])
-        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them. Message me if you do!","Alice"])
+                                                        "</table>","Alice", False])
+        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them. Message me if you do!","Alice", False])
         self.create_table_entry('knowledge_articles', ["Python 101", "Here is a glossary of key terms I created when I learnt python!" + "<table style=\"width:100%\" border=\"1px solid black\">" +
                                                        "<tr>" +
                                                             "<td><h4>Term</h4></td>" + 
@@ -308,8 +308,8 @@ class DB():
                                                             "<td>argument</td>" +
                                                             "<td>input values given to a function</td>" +
                                                         "</tr>" +
-                                                        "</table>","James"])
-        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin"])
+                                                        "</table>","James", False])
+        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin", False])
         self.create_table_entry('knowledge_articles', ["INFO2222 Courseguide",
                                                        "<h4>Overview</h4>" + \
                                                         "<p>This unit provides an integrated treatment of two critical topics for a computing professional: human computer interaction (HCI) and security. The techniques and core ideas of HCI will be studied with a particular focus on examples and case studies related to security. This unit builds the students' awareness of the deep challenges in creating computing systems that can meet people's needs for both HCI and security. It will develop basic skills to evaluate systems for their effectiveness in meeting people's needs within the contexts of their use, building knowledge of common mistakes in systems, and approaches to avoid those mistakes.</p>" + \
@@ -322,7 +322,7 @@ class DB():
                                                         "<p>Conditions for pass in this unit:</p>" + \
                                                         "<ul><li>At least 40% in the progressive marks</li>" + \
                                                         "<li>At least 40% in the final exam</li>" + \
-                                                        "<li>At least 50% total</li></ul>","admin"])
+                                                        "<li>At least 50% total</li></ul>","admin", False])
         return
 
     def add_table(self, table_name, *table_fields):

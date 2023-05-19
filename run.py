@@ -297,8 +297,9 @@ def post_knowledge():
         return model.remove_knowledge_article(article_title)
     
     if request.forms.get("add") == "add":
-        article_conent = request.forms.get('article_content')
-        return model.add_knowledge_article(article_title,article_conent)
+        article_content = request.forms.get('article_content')
+        is_anonymous = request.forms.get('is_anonymous')
+        return model.add_knowledge_article(article_title, article_content, is_anonymous)
 
 @server.get('/knowledge')
 def get_knowledge():

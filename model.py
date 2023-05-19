@@ -420,7 +420,6 @@ def help(article_title):
 
     if article_title is not None:
         article_content = no_sql_db.database.search_table_for_entry("help_articles", "title",article_title)[1]
-        print(article_content)
     else:
         article_content = None       
     return page_view("help",article_title=article_title, article_content=article_content,articles=articles,username=username, admin=is_admin)
@@ -461,10 +460,13 @@ def knowledge(article_title):
     if article_title is not None:
         article_content = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[1]
         author = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[2]
+        is_anonymous = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[3]
+
     else:
         article_content = None
-        author = None      
-    return page_view("knowledge",article_title=article_title, article_content=article_content,author=author,articles=articles,username=username, admin=is_admin)
+        author = None   
+        is_anonymous = False
+    return page_view("knowledge",article_title=article_title, article_content=article_content,author=author,anonymous=is_anonymous, articles=articles,username=username, admin=is_admin)
 
 def remove_knowledge_article(article_title):
     username, is_admin = authenticate_session()
@@ -477,16 +479,21 @@ def remove_knowledge_article(article_title):
     articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
     return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
 
-def add_knowledge_article(article_title, article_content):
+def add_knowledge_article(article_title, article_content, anonymous):
     username, is_admin = authenticate_session()
 
     if not username:
         return redirect('/')
     
-    no_sql_db.database.create_table_entry('knowledge_articles', [article_title,article_content, username])
+    is_anonymous = False
+    if anonymous == "True":
+        is_anonymous = True
+
+    no_sql_db.database.create_table_entry('knowledge_articles', [article_title, article_content, username, is_anonymous])
+   
     articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
-    print("HI DO I GET HERE")
-    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+    return page_view("knowledge", article_title=article_title, article_content=None, articles=articles, username=username, admin=is_admin)
 
 
 #-----------------------------------------------------------------------------
