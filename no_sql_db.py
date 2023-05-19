@@ -93,7 +93,7 @@ class DB():
         self.tables = {}
 
         # Setup your tables
-        self.add_table('users',"username", "password", "salt",'public_key', 'is_admin')
+        self.add_table('users',"username", "password", "salt", "public_key", "is_admin", "is_muted")
 
 
         '''
@@ -104,9 +104,10 @@ class DB():
         import hashlib
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
-        self.create_table_entry('users', ["Steven",key,salt,'',False])
-        self.create_table_entry('users', ["Alice",key,salt,'',False])
-        self.create_table_entry('users', ["James",key,salt,'',False])
+        self.create_table_entry('users', ["Admin", key, salt,'',True, False])
+        self.create_table_entry('users', ["Steven", key, salt,'',False, False])
+        self.create_table_entry('users', ["Alice", key, salt,'',False, False])
+        self.create_table_entry('users', ["James", key, salt,'',False, False])
 
 
         '''
@@ -114,17 +115,17 @@ class DB():
 
         '''
         self.add_table('help_articles',"title", "content")
-        self.create_table_entry('help_articles', ["Is the chat system secure?","chat system Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
-        self.create_table_entry('help_articles', ["How do I change my password?"," password Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
-        self.create_table_entry('help_articles', ["How do I use a screenreader for accessibility?","screenreader Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis aliquet magna id quam ultricies semper. Proin quis maximus eros, ac finibus metus. Nulla facilisi. Interdum et malesuada fames ac ante ipsum primis in faucibus. Morbi ultricies non urna sit amet rutrum. Sed viverra orci ac sem lacinia accumsan. Vestibulum nisl neque, placerat eu leo vel, varius laoreet elit. Aenean imperdiet est nisi, eget rutrum diam vehicula non. Quisque quis tincidunt libero, quis ornare enim. Quisque at placerat ante. Donec non ornare ligula, sit amet convallis orci. Integer euismod pulvinar sapien congue scelerisque. Mauris accumsan dictum magna, auctor ullamcorper mi ultricies quis. Aenean et sodales tortor, eu pretium metus."])
+        self.create_table_entry('help_articles', ["Is the chat system secure?","The chat system is extremely secure! It employs End-to-end encryption (E2EE) to achieve secure communication and does this through the use of WebSockets, sessions and RSA encryption. It's so secure that even our server cannot decipher your messages!"])
+        self.create_table_entry('help_articles', ["How do I change my password?","Changing your password is easy! All you have to do is hover over the top right dropdown and then click \"Account Settings\". Once you have reached the account settings page just enter your old password to verify and pick a new one."])
+        self.create_table_entry('help_articles', ["How do I report a problem with the platform?","If you have any problems with the platform all you have to do is let Admin know. Once you have logged in, Admin will be within your friends and just message to report any issues."])
         
         '''
             hard coded kx articles
 
         '''
-        self.add_table('knowledge_articles',"title", "content", "author")
+        self.add_table('knowledge_articles',"title", "content", "author", "anonymous")
 
-        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin"])
+        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin", False])
         self.create_table_entry('knowledge_articles', ["INFO2222 Courseguide",
                                                        "<h4>Overview</h4>" + \
                                                         "<p>This unit provides an integrated treatment of two critical topics for a computing professional: human computer interaction (HCI) and security. The techniques and core ideas of HCI will be studied with a particular focus on examples and case studies related to security. This unit builds the students' awareness of the deep challenges in creating computing systems that can meet people's needs for both HCI and security. It will develop basic skills to evaluate systems for their effectiveness in meeting people's needs within the contexts of their use, building knowledge of common mistakes in systems, and approaches to avoid those mistakes.</p>" + \
@@ -137,7 +138,7 @@ class DB():
                                                         "<p>Conditions for pass in this unit:</p>" + \
                                                         "<ul><li>At least 40% in the progressive marks</li>" + \
                                                         "<li>At least 40% in the final exam</li>" + \
-                                                        "<li>At least 50% total</li></ul>","admin"])
+                                                        "<li>At least 50% total</li></ul>","admin", False])
         self.create_table_entry('knowledge_articles', ["Agile Team Roles and Responsibilities","I recently completed a huge project where we worked in Agile teams. For anyone wondering this is the breakdown of the Agile roles." +
                                                         "<h3>Scrum Master or Agile Team Leader</h3>" +
                                                         "Scrum is very specific about the role of a Scrum Master as it is an integral part of the method." +
@@ -166,13 +167,13 @@ class DB():
                                                             "<li>Write unit tests</li>" +
                                                             "<li>Checking the code into the version control system for each build</li>" +
                                                         "</ul>"
-                                                        ,"Steven"])
+                                                        ,"Steven", True])
         self.create_table_entry('knowledge_articles', ["Help! My assignment won't compile :(","I've been trying to fix it for ages but keep getting this error message:\n"
                                                        "<p>,\"Bob\"])" + \
                                                         "<p>^" + \
                                                         "<p>SyntaxError: invalid syntax" + \
                                                         "<p>Does anyone have any advice? If you do please message me!"
-                                                        ,"Alice"])
+                                                        ,"Alice", False])
         self.create_table_entry('knowledge_articles', ["Algorithms and Datastructure Essentials", "Here is a small table with the key data structures and information on each.\n" +  
                                                        "<h2>Part 1</h2>" + 
                                                        "<table style=\"width:100%\" border=\"1px solid black\">" +
@@ -263,8 +264,8 @@ class DB():
                                                             "<td>Algorithm doesn't take extra space, but the tree is still O(n + m) </td>" + 
                                                             "<td>Depends on the task</td>" + 
                                                         "</tr>" +
-                                                        "</table>","Alice"])
-        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them. Message me if you do!","Alice"])
+                                                        "</table>","Alice", False])
+        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them. Message me if you do!","Alice", False])
         self.create_table_entry('knowledge_articles', ["Python 101", "Here is a glossary of key terms I created when I learnt python!" + "<table style=\"width:100%\" border=\"1px solid black\">" +
                                                        "<tr>" +
                                                             "<td><h4>Term</h4></td>" + 
@@ -322,7 +323,7 @@ class DB():
                                                             "<td>argument</td>" +
                                                             "<td>input values given to a function</td>" +
                                                         "</tr>" +
-                                                        "</table>","James"])
+                                                        "</table>","James", False])
         return
 
     def add_table(self, table_name, *table_fields):

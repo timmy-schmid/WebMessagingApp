@@ -297,8 +297,9 @@ def post_knowledge():
         return model.remove_knowledge_article(article_title)
     
     if request.forms.get("add") == "add":
-        article_conent = request.forms.get('article_content')
-        return model.add_knowledge_article(article_title,article_conent)
+        article_content = request.forms.get('article_content')
+        is_anonymous = request.forms.get('is_anonymous')
+        return model.add_knowledge_article(article_title, article_content, is_anonymous)
 
 @server.get('/knowledge')
 def get_knowledge():
@@ -320,7 +321,7 @@ def get_edit_users():
     return model.edit_users()
 
 # Searching for user to edit
-@server.post('/edit_user')
+@server.post('/edit_users')
 def post_search_user():
     '''
         post_change_password
@@ -338,7 +339,11 @@ def post_search_user():
     
     # No functionality yet
     if request.forms.get("mute") == "Mute user":
-        return model.edit_users()
+        return model.mute_user(user)
+    
+    # No functionality yet
+    if request.forms.get("mute") == "Unmute user":
+        return model.unmute_user(user)
     
 
 # Help with debugging
@@ -358,8 +363,6 @@ if __name__ == "__main__":
 
     # Turn this off for production
     debug = True
-
-    model.create_admin()
 
     eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
                                     certfile='cert.pem',

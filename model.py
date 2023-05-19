@@ -62,16 +62,6 @@ sid_map = {}
 rooms = Rooms()
 
 #-----------------------------------------------------------------------------
-# Admin
-#-----------------------------------------------------------------------------
-
-#create admin
-def create_admin():
-    salt = os.urandom(32)
-    key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
-    no_sql_db.database.create_table_entry('users', ["admin", key, salt, '', True]) # note we start with empty public_key
-
-#-----------------------------------------------------------------------------
 # Index
 #-----------------------------------------------------------------------------
 
@@ -152,7 +142,7 @@ def create_user(username, password, confirm_password, public_key):
         err_str = "Password must contain a special character. Please try again" 
         return page_view("create_user", err=err_str)
     else:
-        no_sql_db.database.create_table_entry('users', [username, key, salt, '', False]) # note we start with empty public_key
+        no_sql_db.database.create_table_entry('users', [username, key, salt, '', False, False]) # note we start with empty public_key
         user_session_id = create_session(username, public_key)
         page_view.global_renders['username']=username
         return immediate_friends_list(user_session_id)
@@ -420,7 +410,6 @@ def help(article_title):
 
     if article_title is not None:
         article_content = no_sql_db.database.search_table_for_entry("help_articles", "title",article_title)[1]
-        print(article_content)
     else:
         article_content = None       
     return page_view("help",article_title=article_title, article_content=article_content,articles=articles,username=username, admin=is_admin)
@@ -453,6 +442,8 @@ def knowledge(article_title):
         Returns the view for the knowledge base page
     '''
     username, is_admin = authenticate_session()
+    
+    is_muted = no_sql_db.database.search_table_for_entry("users", "username", username)[5]
 
     if not username:
         return redirect('/')
@@ -461,10 +452,16 @@ def knowledge(article_title):
     if article_title is not None:
         article_content = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[1]
         author = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[2]
+        is_anonymous = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[3]
+
     else:
         article_content = None
-        author = None      
-    return page_view("knowledge",article_title=article_title, article_content=article_content,author=author,articles=articles,username=username, admin=is_admin)
+        author = None   
+        is_anonymous = False
+    
+    return page_view("knowledge",article_title=article_title, article_content=article_content,
+                     author=author,anonymous=is_anonymous, muted=is_muted, articles=articles,
+                     username=username, admin=is_admin)
 
 def remove_knowledge_article(article_title):
     username, is_admin = authenticate_session()
@@ -477,16 +474,21 @@ def remove_knowledge_article(article_title):
     articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
     return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
 
-def add_knowledge_article(article_title, article_content):
+def add_knowledge_article(article_title, article_content, anonymous):
     username, is_admin = authenticate_session()
 
     if not username:
         return redirect('/')
     
-    no_sql_db.database.create_table_entry('knowledge_articles', [article_title,article_content, username])
+    is_anonymous = False
+    if anonymous == "True":
+        is_anonymous = True
+
+    no_sql_db.database.create_table_entry('knowledge_articles', [article_title, article_content, username, is_anonymous])
+   
     articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
-    print("HI DO I GET HERE")
-    return page_view("knowledge",article_title=article_title, article_content=None,articles=articles,username=username, admin=is_admin)
+
+    return page_view("knowledge", article_title=article_title, article_content=None, articles=articles, username=username, admin=is_admin)
 
 
 #-----------------------------------------------------------------------------
@@ -496,8 +498,10 @@ def add_knowledge_article(article_title, article_content):
 def get_user_data(current_user):
     data = no_sql_db.database.select_all_table_values("users","username")
     data.remove(current_user)
-    if current_user != "admin":
-        data.remove("admin")
+
+    #Remove admin?
+    """if current_user != "Admin":
+        data.remove("Admin")"""
 
     return data
 
@@ -534,9 +538,12 @@ def edit_users():
     
     data = get_user_data(current_user)
 
-    return page_view("edit_users", user_list=data,username=current_user, admin=is_admin)
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
 
-
+    return page_view("edit_users", user_list=data,username=current_user, mute_list=mute_list, admin=is_admin)
 
 def remove_user(user):
     username, is_admin = authenticate_session()
@@ -545,9 +552,46 @@ def remove_user(user):
     no_sql_db.database.remove_table_entry('users', current_user)
     data = get_user_data(username)
 
-    success_string = "User " + user + " has been removed."
+    success_string = user + " has been removed."
 
-    return page_view("edit_users", user_list=data, username=username, admin=is_admin, success=success_string)
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
+
+def mute_user(user):
+    username, is_admin = authenticate_session()
+
+    no_sql_db.database.update_table_val("users","username", user, "is_muted", True)
+
+    success_string = user + " has been muted."
+
+    data = get_user_data(username)
+
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
+
+def unmute_user(user):
+    username, is_admin = authenticate_session()
+
+    no_sql_db.database.update_table_val("users","username", user, "is_muted", False)
+
+    success_string = user + " has been unmuted."
+
+    data = get_user_data(username)
+
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
 
 #-----------------------------------------------------------------------------
 # Messaging
