@@ -115,7 +115,7 @@ def create_user_form():
     
 
 # Check the user credentials
-def create_user(username, password, public_key):
+def create_user(username, password, confirm_password, public_key):
     '''
         Create_user
         Checks usernames and passwords
@@ -140,7 +140,10 @@ def create_user(username, password, public_key):
         err_str = "A user already exists with this username. Please choose a different username."
         return page_view("create_user", err=err_str)
     elif username == password:
-        err_str = "Username cannot be the same as password" 
+        err_str = "Username cannot be the same as password"
+        return page_view("create_user", err=err_str)
+    elif password != confirm_password:
+        err_str = "Password entries are different. Please confirm your password and try again." 
         return page_view("create_user", err=err_str)
     elif len(password) < MAX_PWD_LENGTH:
         err_str = "Password must be at least 8 characters long. Please try again" 

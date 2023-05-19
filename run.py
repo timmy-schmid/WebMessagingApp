@@ -124,10 +124,11 @@ def post_create_user():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    confirm_password = request.forms.get('confirm_password')
     public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
     
     # Call the appropriate method
-    return model.create_user(username, password, public_key)
+    return model.create_user(username, password, confirm_password, public_key)
 
 # Display the login page
 
