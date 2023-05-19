@@ -125,7 +125,7 @@ class DB():
         '''
         self.add_table('knowledge_articles',"title", "content", "author", "anonymous")
 
-        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin"])
+        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin", False])
         self.create_table_entry('knowledge_articles', ["INFO2222 Courseguide",
                                                        "<h4>Overview</h4>" + \
                                                         "<p>This unit provides an integrated treatment of two critical topics for a computing professional: human computer interaction (HCI) and security. The techniques and core ideas of HCI will be studied with a particular focus on examples and case studies related to security. This unit builds the students' awareness of the deep challenges in creating computing systems that can meet people's needs for both HCI and security. It will develop basic skills to evaluate systems for their effectiveness in meeting people's needs within the contexts of their use, building knowledge of common mistakes in systems, and approaches to avoid those mistakes.</p>" + \
@@ -138,7 +138,7 @@ class DB():
                                                         "<p>Conditions for pass in this unit:</p>" + \
                                                         "<ul><li>At least 40% in the progressive marks</li>" + \
                                                         "<li>At least 40% in the final exam</li>" + \
-                                                        "<li>At least 50% total</li></ul>","admin"])
+                                                        "<li>At least 50% total</li></ul>","admin", False])
         self.create_table_entry('knowledge_articles', ["Agile Team Roles and Responsibilities","I recently completed a huge project where we worked in Agile teams. For anyone wondering this is the breakdown of the Agile roles." +
                                                         "<h3>Scrum Master or Agile Team Leader</h3>" +
                                                         "Scrum is very specific about the role of a Scrum Master as it is an integral part of the method." +
@@ -324,20 +324,6 @@ class DB():
                                                             "<td>input values given to a function</td>" +
                                                         "</tr>" +
                                                         "</table>","James", False])
-        self.create_table_entry('knowledge_articles', ["Knowledge Repository Rules and Basics","Our knowledge base does not have many rules. We only ask that you be respectful of other students. You can whatever resource, answers, or questions you like, as long as you are respectful of others. Otherwise we will mute you. Happy learning!","Admin", False])
-        self.create_table_entry('knowledge_articles', ["INFO2222 Courseguide",
-                                                       "<h4>Overview</h4>" + \
-                                                        "<p>This unit provides an integrated treatment of two critical topics for a computing professional: human computer interaction (HCI) and security. The techniques and core ideas of HCI will be studied with a particular focus on examples and case studies related to security. This unit builds the students' awareness of the deep challenges in creating computing systems that can meet people's needs for both HCI and security. It will develop basic skills to evaluate systems for their effectiveness in meeting people's needs within the contexts of their use, building knowledge of common mistakes in systems, and approaches to avoid those mistakes.</p>" + \
-                                                        "<h4>Project</h4>" + \
-                                                        "<p>Students work in a team to design and develop a ‘usable and secure’ website, with an End-to-End encrypted secure messaging function. Each student will be required to review their own performance and that of each team members and explain them (e.g., contribution portion, or which specific checking points) in the project reports. Individual marks for group assessments will be determined by the overall group product as well as the individual contributions.</p>" + \
-                                                        "<h4>Homeworks</h4>" + \
-                                                        "<p>Students work individually, each HW contains several questions to be answered.</p>" + \
-                                                        "<h4>Final Exam</h4>" + \
-                                                        "<p>Open book online exam that assesses all contents covered in the semester. Students must score at least 40% in the final exam to pass the unit (see Pass requirements). Detailed information for each assessment can be found on Canvas.</p>" + \
-                                                        "<p>Conditions for pass in this unit:</p>" + \
-                                                        "<ul><li>At least 40% in the progressive marks</li>" + \
-                                                        "<li>At least 40% in the final exam</li>" + \
-                                                        "<li>At least 50% total</li></ul>","admin", False])
         return
 
     def add_table(self, table_name, *table_fields):
