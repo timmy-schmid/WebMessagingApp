@@ -339,7 +339,7 @@ def post_search_user():
     
     # No functionality yet
     if request.forms.get("mute") == "Mute user":
-        return model.edit_users()
+        return model.mute_user(user)
     
 
 # Help with debugging
@@ -359,8 +359,6 @@ if __name__ == "__main__":
 
     # Turn this off for production
     debug = True
-
-    model.create_admin()
 
     eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
                                     certfile='cert.pem',

@@ -93,7 +93,7 @@ class DB():
         self.tables = {}
 
         # Setup your tables
-        self.add_table('users',"username", "password", "salt",'public_key', 'is_admin')
+        self.add_table('users',"username", "password", "salt", "public_key", "is_admin", "is_muted")
 
 
         '''
@@ -104,9 +104,10 @@ class DB():
         import hashlib
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
-        self.create_table_entry('users', ["Steven",key,salt,'',False])
-        self.create_table_entry('users', ["Alice",key,salt,'',False])
-        self.create_table_entry('users', ["James",key,salt,'',False])
+        self.create_table_entry('users', ["Admin", key, salt,'',True, False])
+        self.create_table_entry('users', ["Steven", key, salt,'',False, False])
+        self.create_table_entry('users', ["Alice", key, salt,'',False, False])
+        self.create_table_entry('users', ["James", key, salt,'',False, False])
 
 
         '''
@@ -152,7 +153,7 @@ class DB():
                                                             "<li>Write unit tests</li>" +
                                                             "<li>Checking the code into the version control system for each build</li>" +
                                                         "</ul>"
-                                                        ,"Steven", False])
+                                                        ,"Steven", True])
         self.create_table_entry('knowledge_articles', ["Help! My assignment won't compile :(","I've been trying to fix it for ages but keep getting this error message:\n"
                                                        "<p>,\"Bob\"])" + \
                                                         "<p>^" + \
