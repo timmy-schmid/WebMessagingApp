@@ -321,7 +321,7 @@ def get_edit_users():
     return model.edit_users()
 
 # Searching for user to edit
-@server.post('/edit_user')
+@server.post('/edit_users')
 def post_search_user():
     '''
         post_change_password
@@ -340,6 +340,10 @@ def post_search_user():
     # No functionality yet
     if request.forms.get("mute") == "Mute user":
         return model.mute_user(user)
+    
+    # No functionality yet
+    if request.forms.get("mute") == "Unmute user":
+        return model.unmute_user(user)
     
 
 # Help with debugging

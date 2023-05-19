@@ -538,8 +538,12 @@ def edit_users():
     
     data = get_user_data(current_user)
 
-    return page_view("edit_users", user_list=data,username=current_user, admin=is_admin)
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
 
+    return page_view("edit_users", user_list=data,username=current_user, mute_list=mute_list, admin=is_admin)
 
 def remove_user(user):
     username, is_admin = authenticate_session()
@@ -548,20 +552,46 @@ def remove_user(user):
     no_sql_db.database.remove_table_entry('users', current_user)
     data = get_user_data(username)
 
-    success_string = "User " + user + " has been removed."
+    success_string = user + " has been removed."
 
-    return page_view("edit_users", user_list=data, username=username, admin=is_admin, success=success_string)
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
 
 def mute_user(user):
     username, is_admin = authenticate_session()
 
-    no_sql_db.database.update_table_val("users","username",user, "is_muted", True)
+    no_sql_db.database.update_table_val("users","username", user, "is_muted", True)
 
-    success_string = "User " + user + " has been muted."
+    success_string = user + " has been muted."
 
     data = get_user_data(username)
 
-    return page_view("edit_users", user_list=data, username=username, admin=is_admin, success=success_string)
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
+
+def unmute_user(user):
+    username, is_admin = authenticate_session()
+
+    no_sql_db.database.update_table_val("users","username", user, "is_muted", False)
+
+    success_string = user + " has been unmuted."
+
+    data = get_user_data(username)
+
+    mute_list = []
+    for user_entry in data:
+        if no_sql_db.database.search_table_for_entry("users", "username", user_entry)[5] == True:
+            mute_list.append(user_entry)
+
+    return page_view("edit_users", user_list=data, username=username, admin=is_admin, mute_list=mute_list, success=success_string)
 
 #-----------------------------------------------------------------------------
 # Messaging
