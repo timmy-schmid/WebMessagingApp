@@ -124,10 +124,11 @@ def post_create_user():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
+    confirm_password = request.forms.get('confirm_password')
     public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
     
     # Call the appropriate method
-    return model.create_user(username, password, public_key)
+    return model.create_user(username, password, confirm_password, public_key)
 
 # Display the login page
 
@@ -291,13 +292,19 @@ def post_knowledge():
     '''
     # Handle the form processing
     article_title = request.forms.get('article_title')
+
     # Call the appropriate method
     if request.forms.get("remove") == "remove":
         return model.remove_knowledge_article(article_title)
     
     if request.forms.get("add") == "add":
-        article_conent = request.forms.get('article_content')
-        return model.add_knowledge_article(article_title,article_conent)
+        article_content = request.forms.get('article_content')
+        is_anonymous = request.forms.get('is_anonymous')
+        return model.add_knowledge_article(article_title, article_content, is_anonymous)
+
+    if request.forms.get("comment") == "comment":
+        user_comment = request.forms.get('user_comment')
+        return model.post_comment(article_title, user_comment)
 
 @server.get('/knowledge')
 def get_knowledge():
@@ -319,7 +326,7 @@ def get_edit_users():
     return model.edit_users()
 
 # Searching for user to edit
-@server.post('/edit_user')
+@server.post('/edit_users')
 def post_search_user():
     '''
         post_change_password
@@ -337,7 +344,11 @@ def post_search_user():
     
     # No functionality yet
     if request.forms.get("mute") == "Mute user":
-        return model.edit_users()
+        return model.mute_user(user)
+    
+    # No functionality yet
+    if request.forms.get("mute") == "Unmute user":
+        return model.unmute_user(user)
     
 
 # Help with debugging
@@ -357,8 +368,6 @@ if __name__ == "__main__":
 
     # Turn this off for production
     debug = True
-
-    model.create_admin()
 
     eventlet.wsgi.server(eventlet.wrap_ssl(eventlet.listen((host, port)),
                                     certfile='cert.pem',

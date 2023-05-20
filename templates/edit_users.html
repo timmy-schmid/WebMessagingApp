@@ -4,16 +4,22 @@
 
     <table class="friends_list">
         % for user in user_list:
-                <form id ="user_form" action="/edit_user" method="post" onsubmit="return submitForm(this);">
+                <form id ="user_form" action="/edit_users" method="post" onsubmit="return submitForm(this);">
                         {{user}}
                         <input class="form__btn" type="hidden" name="user" value={{user}}>
-                        <input class="form__btn" type="submit" name="remove" value="Remove user" />
-                        <input class="form__btn" type="submit" name="mute" value="Mute user" />
+                        <input class="form__btn-remove" type="submit" name="remove" value="Remove user" />
+                        % if defined('mute_list') and user in mute_list:
+                            <input class="form__btn-mute" type="submit" name="mute" value="Unmute user" /> 
+                        % else:
+                            <input class="form__btn-mute" type="submit" name="mute" value="Mute user" />  
+
+                        %end
                     
                 </br>
                 </form>
         % end
         </table>
+    
 
     <script>
         function submitForm() {

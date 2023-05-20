@@ -187,9 +187,32 @@ ul {
 }
 
 .form__btn-remove {
-  max-width:200px;
+  margin: 0.8rem;
+  /*max-width:200px;*/
   appearance: none;
   background-color: red; 
+  color: white;
+  border: 1px solid rgba(27, 31, 35, .15);
+  border-radius: 6px;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  padding: 6px 16px;
+  position: relative;
+  text-align: center;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.form__btn-mute {
+  margin: 0.8rem;
+  appearance: none;
+  background-color: rgba(0, 102, 255, 0.858); 
   color: white;
   border: 1px solid rgba(27, 31, 35, .15);
   border-radius: 6px;
@@ -290,56 +313,6 @@ hr {
 
 .friends_list a {
     color: black;         
-}
-
-.remove {
-    appearance: none;
-    background-color: #d32323;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 6px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-    text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    margin-left: 30px;
-}
-
-.mute {
-    appearance: none;
-    background-color: #2375d3;
-    border: 1px solid rgba(27, 31, 35, .15);
-    border-radius: 6px;
-    box-shadow: rgba(27, 31, 35, .1) 0 1px 0;
-    box-sizing: border-box;
-    color: #fff;
-    cursor: pointer;
-    display: inline-block;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 600;
-    line-height: 20px;
-    padding: 6px 16px;
-    position: relative;
-    text-align: center;
-    user-select: none;
-    -webkit-user-select: none;
-    touch-action: manipulation;
-    vertical-align: middle;
-    white-space: nowrap;
-    margin-left: 5px;
 }
 
 .img-settings {
