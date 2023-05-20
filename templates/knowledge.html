@@ -13,7 +13,7 @@
             <p class="author">posted by {{author}}</p>
             <p>{{ !article_content}}</p>
         % if (defined('admin') and admin is True) or (username == author):
-        <form action="/knowledge" method="post">
+        <form action="/knowledge" method="post" onsubmit="return submitForm(this);">
             <input type="hidden" name="article_title" value="{{article_title}}">
             <button class="form__btn-remove" name="remove" value="remove" type="submit"><i class="fa-solid fa-x"></i> Delete Article</button>
         </form>
@@ -21,9 +21,16 @@
         %end
     </article>
 </section>
+
 <hr>
 <form action="/knowledge" method="post">
     <input class="form__field" name="article_title" placeholder="Article Title">
     <textarea class="form__txtarea" name="article_content" placeholder="Article Content"></textarea>
     <button class="form__btn" name="add" value="add" type="submit">Add New Article</button>
 </form>
+
+<script>
+    function submitForm() {
+        return confirm("Are you sure that you want to delete this article?");
+    }
+</script>
