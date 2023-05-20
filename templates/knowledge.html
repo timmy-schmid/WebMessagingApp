@@ -18,6 +18,16 @@
             
             %end
             <p>{{!article_content}}</p>
+        
+        <form action="/knowledge" method="post">
+            <input type="hidden" name="article_title" value="{{article_title}}">
+            <input class="form__field" name="user_comment" placeholder="Add comment">
+            <button class="form__btn-mute" name="comment" value="comment" type="submit">Post</button>
+        </form>
+
+        % for comment in comments:
+            <p> &nbsp;&nbsp;&nbsp;&nbsp; {{comment}}</p>
+        % end
 
         % if (defined('admin') and admin is True) or (username == author):
         <form action="/knowledge" method="post">

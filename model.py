@@ -453,15 +453,17 @@ def knowledge(article_title):
         article_content = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[1]
         author = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[2]
         is_anonymous = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[3]
+        comments = no_sql_db.database.search_table_for_entry("knowledge_articles", "title",article_title)[4]
 
     else:
         article_content = None
         author = None   
         is_anonymous = False
+        comments = None
     
     return page_view("knowledge",article_title=article_title, article_content=article_content,
                      author=author,anonymous=is_anonymous, muted=is_muted, articles=articles,
-                     username=username, admin=is_admin)
+                     username=username, admin=is_admin, comments=comments)
 
 def remove_knowledge_article(article_title):
     username, is_admin = authenticate_session()
@@ -484,11 +486,24 @@ def add_knowledge_article(article_title, article_content, anonymous):
     if anonymous == "True":
         is_anonymous = True
 
-    no_sql_db.database.create_table_entry('knowledge_articles', [article_title, article_content, username, is_anonymous])
+    no_sql_db.database.create_table_entry('knowledge_articles', [article_title, article_content, username, is_anonymous, []])
    
     articles = no_sql_db.database.select_all_table_values("knowledge_articles", "title")
 
     return page_view("knowledge", article_title=article_title, article_content=None, articles=articles, username=username, admin=is_admin)
+
+def post_comment(article_title, user_comment):
+    print("hi")
+    username, is_admin = authenticate_session()
+
+    current_article_comments = no_sql_db.database.search_table_for_entry("knowledge_articles", "title", article_title)[4]
+
+    comment_string = username + ": " + user_comment
+    current_article_comments.append(comment_string)
+
+    no_sql_db.database.update_table_val("knowledge_articles", "title", article_title, 'comments', current_article_comments)
+    
+    return knowledge(article_title)
 
 
 #-----------------------------------------------------------------------------

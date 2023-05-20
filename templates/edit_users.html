@@ -9,7 +9,7 @@
                         <input class="form__btn" type="hidden" name="user" value={{user}}>
                         <input class="form__btn-remove" type="submit" name="remove" value="Remove user" />
                         % if defined('mute_list') and user in mute_list:
-                            <input class="form__btn-mute" type="submit" name="mute" value="Unmute user"" /> 
+                            <input class="form__btn-mute" type="submit" name="mute" value="Unmute user" /> 
                         % else:
                             <input class="form__btn-mute" type="submit" name="mute" value="Mute user" />  
 

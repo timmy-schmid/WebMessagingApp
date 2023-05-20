@@ -292,6 +292,7 @@ def post_knowledge():
     '''
     # Handle the form processing
     article_title = request.forms.get('article_title')
+
     # Call the appropriate method
     if request.forms.get("remove") == "remove":
         return model.remove_knowledge_article(article_title)
@@ -300,6 +301,10 @@ def post_knowledge():
         article_content = request.forms.get('article_content')
         is_anonymous = request.forms.get('is_anonymous')
         return model.add_knowledge_article(article_title, article_content, is_anonymous)
+
+    if request.forms.get("comment") == "comment":
+        user_comment = request.forms.get('user_comment')
+        return model.post_comment(article_title, user_comment)
 
 @server.get('/knowledge')
 def get_knowledge():
