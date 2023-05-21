@@ -1,24 +1,38 @@
-<section>
-    <h1>Chat Room</h1>
-    </br>
-    <p> Hi {{username}} you are now chatting with {{friend}}</p>
 
-    <div id="messages">
+<h1>CHAT</h1>
+<p>Welcome to the messaging page. Click on a friend on the left to message them</p>
 
-    </div>
+<section class="help-section">
+    <sidebar>
+        <h2>Friends</h2>
+        % for cur_friend in friends_list:
+        <a href="chat?friend={{cur_friend}}"><p>{{cur_friend}}</p></a>
+        % end
+    </sidebar>
+    <article>
+        %if friend is not None:
+        <div class="article-content">
+            </br>
+            <p style="color:blue;"> Hi {{username}} you are now chatting with {{friend}}</p>
 
-    </br></br></br>
+            <div id="messages">
 
-    <div>
-        <form action="/chat" id="msg_input_form" method="post">
-            <input type="text" id="msg_input" placeholder="Enter your message here"/>
-        </br>        </br>
-            <button class="form__btn" type="submit">Send</button>
+            </div>
 
-        </form>
+            </br></br></br>
 
-        <form action="/chat" method="post">
-            <button class="form__btn" id="close" type="submit">Leave Room</button>
-        </form>
-    </div>
+            <div>
+                <form name="create_user_form" action="/chat" id="msg_input_form" method="post">
+                    <input style="width:90%;" class="form__field" type="text" id="msg_input" placeholder="Enter your message here"/>
+                    <button class="form__btn" type="submit">Send</button>
+
+                </form>
+
+                <form action="/chat" method="post">
+                    <button class="form__btn" id="close" type="submit">Leave Room</button>
+                </form>
+            </div>
+            </div>
+        %end
+    </article>
 </section>

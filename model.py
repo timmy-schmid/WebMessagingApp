@@ -134,7 +134,7 @@ def create_user_form():
     if authenticate_session()[USERNAME]:
         return redirect('/')
 
-    return page_view("forgot_details",)
+    return page_view("create_user",)
     
 
 # Check the user credentials
@@ -148,6 +148,7 @@ def create_user(username, email, password, confirm_password, public_key):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
+
 
     if authenticate_session()[1]:
         return redirect('/')
@@ -184,7 +185,7 @@ def create_user(username, email, password, confirm_password, public_key):
         no_sql_db.database.create_table_entry('users', [username, email,key, salt, '', False, False]) # note we start with empty public_key
         user_session_id = create_session(username, public_key)
         page_view.global_renders['username']=username
-        return immediate_friends_list(user_session_id)
+        return page_view("login", username=username)
 
 #-----------------------------------------------------------------------------
 # Login
@@ -214,6 +215,7 @@ def login_check(username, password, public_key):
 
         Returns either a view for valid credentials, or a view for invalid credentials
     '''
+    
     if authenticate_session()[USERNAME]:
         return redirect('/')
 
@@ -229,13 +231,8 @@ def login_check(username, password, public_key):
 
     if current_user[PASSWORD] == new_key and is_admin == True:
         user_session_id = create_session(username, public_key)
-        return page_view("login", username=current_user[USERNAME], admin=is_admin)
-    
-    elif current_user[PASSWORD] == new_key:
-        user_session_id = create_session(username, public_key)
-        return immediate_friends_list(user_session_id)
-    
-    else:
+        return page_view("login", username=current_user[USERNAME], admin=is_admin)    
+    else: 
         err_str = "Incorrect Password. Please try again"
         return page_view("login", err=err_str)
 
@@ -246,6 +243,7 @@ def create_session(username, public_key):
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
     no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
+    print("TEST PK: " + str(public_key));
 
     return user_session_id
 
@@ -561,22 +559,11 @@ def get_user_data(current_user):
 
     return data
 
-def friends_list():
-    #retrieve friends from database by user id
-    current_user, is_admin = authenticate_session()
-    
-    if not current_user:
-        return redirect('/')
-
-    data = get_user_data(current_user)
-    
-    return page_view("friends", friends_list=data, username=current_user, admin=is_admin)
-
 def immediate_friends_list(user_session_id):
     current_user = sessions[user_session_id]
     data = get_user_data(current_user)
 
-    return page_view("friends", friends_list=data,username=current_user)
+    return page_view("chat", friends_list=data,username=current_user)
 
 #-----------------------------------------------------------------------------
 # Edit Users
@@ -655,12 +642,21 @@ def unmute_user(user):
 
 def chat(friend):
 
-    username, is_admin = authenticate_session()
-
-    if not username or friend is None:
-        return redirect('/')
+    #retrieve friends from database by user id
+    current_user, is_admin = authenticate_session()
     
-    return page_view("chat",friend=friend,username=username,chat=True)    
+    if not current_user:
+        return redirect('/')
+
+    data = get_user_data(current_user)
+
+    if friend:
+        chat = True
+    else:
+        chat = False
+
+    return page_view("chat", friend=friend,friends_list=data, chat=chat, username=current_user, admin=is_admin)
+
 
 def connect_socket(sid) :
     sid_map[sid] = sessions[request.get_cookie("user_session_id")]

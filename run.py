@@ -257,16 +257,6 @@ def post_change_password():
     # Call the appropriate method
     return model.change_password(current_password, new_password,confirm_new_password)
 
-
-@server.get('/friends')
-def get_friends():
-    '''
-        get_friends
-        
-        Serves the friends page
-    '''
-    return model.friends_list()
-
 @server.post('/help')
 def post_help():
     '''
