@@ -1,0 +1,15 @@
+<section>
+
+    <h1>Please enter your email address and we will send you a link to get your username or reset your password</h1>
+    </br>
+    <div>
+        <form class="create_user_form" action="/forgot_details" method="post" >
+            <input class="form__field" name="email" type="email" placeholder="Email"/ required="True">
+        </br></br>
+            <button class="form__btn" type="submit" />Create user</button>
+        </form>
+    </div>
+    % if defined('success') and success == True:
+    <p class="success">We've just sent you an email! Please check your inbox and follow the instructions to retrieve your username/password!</p>
+    % end
+</section>

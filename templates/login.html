@@ -4,7 +4,7 @@
 </br>
 <script>generateRSA('login_form')</script>
 % else:
-<p>This username-password combination is valid, welcome {{username}}</p>
+<p class="success">This username-password combination is valid, welcome {{username}}</p>
 %end
 
 % if defined('err'):

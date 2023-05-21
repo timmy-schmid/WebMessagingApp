@@ -8,8 +8,10 @@
     </sidebar>
     <article>
         %if article_content is not None:
+        <div class="article-content">
             <h1>{{article_title}}</h1>
             <p>{{article_content}}</p>
+        </div>
         % if defined('admin') and admin is True:
         <form action="/help" method="post" onsubmit="return submitForm(this);">
             <input type="hidden" name="article_title" value="{{article_title}}">

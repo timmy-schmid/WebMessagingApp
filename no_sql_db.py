@@ -93,7 +93,7 @@ class DB():
         self.tables = {}
 
         # Setup your tables
-        self.add_table('users',"username", "password", "salt", "public_key", "is_admin", "is_muted")
+        self.add_table('users',"username","email", "password", "salt", "public_key", "is_admin", "is_muted")
 
 
         '''
@@ -104,10 +104,10 @@ class DB():
         import hashlib
         salt = os.urandom(32)
         key = hashlib.pbkdf2_hmac('sha256', "admin1".encode('utf-8'), salt, 100000)
-        self.create_table_entry('users', ["Admin", key, salt,'',True, False])
-        self.create_table_entry('users', ["Steven", key, salt,'',False, False])
-        self.create_table_entry('users', ["Alice", key, salt,'',False, False])
-        self.create_table_entry('users', ["James", key, salt,'',False, False])
+        self.create_table_entry('users', ["Admin", "admin@securechat.com",key, salt,'',True, False])
+        self.create_table_entry('users', ["Steven", "steven92@hotmail.com",key, salt,'',False, False])
+        self.create_table_entry('users', ["Alice", "alice_is_the_best@yahoo.mail",key, salt,'',False, False])
+        self.create_table_entry('users', ["James", "james@techworld.com.au",key, salt,'',False, False])
 
 
         '''

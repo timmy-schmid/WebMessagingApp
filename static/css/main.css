@@ -19,6 +19,7 @@ main {
 }
 
 section {
+  max-width: 1500px;
   padding: 2rem;
 }
 
@@ -296,6 +297,13 @@ hr {
   color: green;
 }
 
+.create_user_form > * {
+  min-width: 300px;
+}
+
+.create_user_form button {
+  padding: 1rem 0;
+}
 
 .success {
     color: green;
@@ -319,4 +327,29 @@ hr {
   width: 1rem;
   display:inline-block;
   filter: invert(100%) sepia(0%) saturate(0%) hue-rotate(284deg) brightness(108%) contrast(101%);
+}
+
+.article-content {
+  padding: 1.2rem;
+  border: 4px solid #2d1c00;
+  background: rgba(255, 231, 171, 0.308);
+}
+
+/* ABOUT SECTION */
+
+.about-section {
+  width: 60%; 
+  margin: 2rem;
+  padding: 1rem;
+  border: 4px solid #0e4f1f;
+  background: rgba(213, 255, 220, 0.95);
+  text-align: left;
+}
+
+#about-product {
+  float: right;
+}
+
+.clearfix {
+  clear: both;
 }

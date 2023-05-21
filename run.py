@@ -123,14 +123,25 @@ def post_create_user():
 
     # Handle the form processing
     username = request.forms.get('username')
+    email = request.forms.get("email");
     password = request.forms.get('password')
     confirm_password = request.forms.get('confirm_password')
-    public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
-    
+    if request.forms.get("public_key") is not None:
+        public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
+    else:
+        public_key = None
     # Call the appropriate method
-    return model.create_user(username, password, confirm_password, public_key)
+    return model.create_user(username,email, password, confirm_password, public_key)
 
 # Display the login page
+
+@server.get('/forgot_details')
+def forgot_details():
+    return model.forgot_details()
+
+@server.post('/forgot_details')
+def forgot_details():
+    return model.forgot_details_post()
 
 @server.get('/chat')
 def get_chat():
@@ -241,9 +252,10 @@ def post_change_password():
     # Handle the form processing
     current_password = request.forms.get('current_password')
     new_password = request.forms.get('new_password')
+    confirm_new_password = request.forms.get('confirm_new_password')
     
     # Call the appropriate method
-    return model.change_password(current_password, new_password)
+    return model.change_password(current_password, new_password,confirm_new_password)
 
 
 @server.get('/friends')

@@ -9,7 +9,15 @@
         % end
     </sidebar>
     <article>
+
         %if article_content is not None:
+        <div class="article-content">
+        % if (defined('admin') and admin is True) or (username == author):
+        <form action="/knowledge" method="post" onsubmit="return submitForm(this);">
+            <input type="hidden" name="article_title" value="{{article_title}}">
+            <button style="margin-left:0px;" class="form__btn-remove" name="remove" value="remove" type="submit"><i class="fa-solid fa-x"></i> Delete Article</button>
+        </form>
+        %end
             <h1>{{article_title}}</h1>
             %if (defined('anonymous') and anonymous is True):
                 <p class="author">posted by Anonymous</p>
@@ -18,23 +26,18 @@
             
             %end
             <p>{{!article_content}}</p>
-        
-        <form action="/knowledge" method="post">
-            <input type="hidden" name="article_title" value="{{article_title}}">
-            <input class="form__field" name="user_comment" placeholder="Add comment">
-            <button class="form__btn-mute" name="comment" value="comment" type="submit">Post</button>
-        </form>
+        </div>
+        <hr>
 
+        <h2>Comments:</h2>
         % for comment in comments:
             <p> &nbsp;&nbsp;&nbsp;&nbsp; {{comment}}</p>
         % end
-
-        % if (defined('admin') and admin is True) or (username == author):
-        <form action="/knowledge" method="post" onsubmit="return submitForm(this);">
+        <form action="/knowledge" method="post">
             <input type="hidden" name="article_title" value="{{article_title}}">
-            <button class="form__btn-remove" name="remove" value="remove" type="submit"><i class="fa-solid fa-x"></i> Delete Article</button>
+            <input class="form__field" name="user_comment" placeholder="Post New Comment">
+            <button class="form__btn-mute" name="comment" value="comment" type="submit">Post</button>
         </form>
-        %end
         %end
     </article>
 </section>
@@ -46,7 +49,6 @@
 <p class="error">You cannot post anything in the knowledge repository because you have been muted by Admin for breaching the repository rules. Please message Admin if you wish to be unmuted.</p>
 </br>
 %else:
-    
     <form action="/knowledge" method="post">
         <input class="form__field" name="article_title" placeholder="Article Title">
         <textarea class="form__txtarea" name="article_content" placeholder="Article Content"></textarea>
