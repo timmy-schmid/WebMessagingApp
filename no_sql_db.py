@@ -265,65 +265,24 @@ class DB():
                                                             "<td>Depends on the task</td>" + 
                                                         "</tr>" +
                                                         "</table>","Alice", False, ["Admin: Thanks so much Alice, this is great information for everyone to use!", "James: this is such a good summary"]])
-        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them?","Alice", False, []])
-        self.create_table_entry('knowledge_articles', ["Python 101", "Here is a glossary of key terms I created when I learnt python!" + "<table style=\"width:100%\" border=\"1px solid black\">" +
-                                                       "<tr>" +
-                                                            "<td><h4>Term</h4></td>" + 
-                                                            "<td><h4>Definition</h4></td>" + 
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>snake case</td>" +
-                                                            "<td>all alphabetical characters should be lowercase, and spaces (if any) should be replaced with underscore characters</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>modulo</td>" +
-                                                            "<td>\'%\' - gets the remainder</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>parse</td>" +
-                                                            "<td>changing a string into float, or int e.g. int(“12”) - the string “12” has been parsed as an integer</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>expression</td>" +
-                                                            "<td>a combination of variables and other items that can be evaluated and will have a value</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>nested if</td>" +
-                                                            "<td>when there is an if inside of another if</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>while loop</td>" +
-                                                            "<td>while the condition is true, repeat what is in the statement</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>for loop</td>" +
-                                                            "<td>while loop but with predefined number of iterations</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>continue</td>" +
-                                                            "<td>skip the rest of the iteration and go on to the next one/ back to the top</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>exception</td>" +
-                                                            "<td>an object that signals the occurrence of an unusual event during the execution of a program</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>iterable</td>" +
-                                                            "<td>an object that can be used as a sequence. You can loop over an iterable, but you cannot access individual elements directly. It's a container object: it can only return one of its element at the time. e.g. list, set</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>enumerate</td>" +
-                                                            "<td>will return a new collection where the number sequence is associated with each element. similar to the list function</td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>set</td>" +
-                                                            "<td>unordered collection with no duplicate elements, which is different from List or Tuple that store collection elements in a sequence and allow duplicated elements. </td>" +
-                                                        "</tr>" +
-                                                        "<tr>" +
-                                                            "<td>argument</td>" +
-                                                            "<td>input values given to a function</td>" +
-                                                        "</tr>" +
-                                                        "</table>","James", False, []])
+        self.create_table_entry('knowledge_articles', ["Does anyone know of any good computing websites for C?","Hey everyone, I'm really struggling with a subject where we are learning C and was wondering if anyone who has learnt C before has any websites they would recommend that helped them?","Alice", False, ["Steven: Yeah I loved initially learning on Codeacademy (https://www.codecademy.com/learn/paths/c) and then W3schools (https://www.w3schools.com/c/index.php) also helped me with extra info on topics I was struggling with"]])
+        self.create_table_entry('knowledge_articles', ["CSS Introduction", "Given I've recently used CSS for a lot of assessments I though I would explain what it is and why it is useful." +
+                                                       "<h4>What is CSS?</h4>"
+                                                        "<ul>"+
+                                                            "<li>CSS stands for Cascading Style Sheets</li>" +
+                                                            "<li>CSS describes how HTML elements are to be displayed on screen, paper, or in other media</li>" +
+                                                            "<li>CSS saves a lot of work. It can control the layout of multiple web pages all at once</li>" +
+                                                            "<li>External stylesheets are stored in CSS files</li>" +
+                                                        "</ul>" +
+                                                        "<h4>Why use CSS?</h4>" +
+                                                        "<p>CSS is used to define styles for your web pages, including the design, layout and variations in display for different devices and screen sizes.</p>" +
+                                                        "<h4>CSS Solved a Big Problem</h4>" +
+                                                        "<p>CSS is used to define styles for your web pages, including the design, layout and variations in display for different devices and screen sizes.</p>" +
+                                                        "<p>HTML was NEVER intended to contain tags for formatting a web page!</p>"
+                                                        "<p>When tags like font, and color attributes were added to the HTML 3.2 specification, it started a nightmare for web developers. Development of large websites, where fonts and color information were added to every single page, became a long and expensive process. To solve this problem, the World Wide Web Consortium (W3C) created CSS. CSS removed the style formatting from the HTML page!</p>" +
+                                                        "<h4>CSS Saves a Lot of Work!</h4>" +
+                                                        "<p>The style definitions are normally saved in external .css files. With an external stylesheet file, you can change the look of an entire website by changing just one file!</p>"
+                                                        ,"James", False, []])
         return
 
     def add_table(self, table_name, *table_fields):

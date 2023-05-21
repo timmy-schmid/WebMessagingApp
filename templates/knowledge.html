@@ -31,7 +31,7 @@
 
         <h2>Comments:</h2>
         % for comment in comments:
-            <p> &nbsp;&nbsp;&nbsp;&nbsp; {{comment}}</p>
+            <p> {{!comment}}</p>
         % end
         <form action="/knowledge" method="post">
             <input type="hidden" name="article_title" value="{{article_title}}">
