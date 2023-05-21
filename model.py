@@ -229,7 +229,7 @@ def login_check(username, password, public_key):
     new_key = hashlib.pbkdf2_hmac('sha256', password.encode('utf-8'), current_user[SALT], 100000)
     is_admin = current_user[IS_ADMIN]
 
-    if current_user[PASSWORD] == new_key and is_admin == True:
+    if current_user[PASSWORD] == new_key:
         user_session_id = create_session(username, public_key)
         return page_view("login", username=current_user[USERNAME], admin=is_admin)    
     else: 
@@ -243,8 +243,6 @@ def create_session(username, public_key):
     sessions[user_session_id] = username
     response.set_cookie("user_session_id",user_session_id)
     no_sql_db.database.update_table_val("users","username",username, "public_key", public_key)
-    print("TEST PK: " + str(public_key));
-
     return user_session_id
 
 #-----------------------------------------------------------------------------
@@ -532,7 +530,6 @@ def add_knowledge_article(article_title, article_content, anonymous):
     return page_view("knowledge", article_title=article_title, article_content=None, articles=articles, username=username, admin=is_admin)
 
 def post_comment(article_title, user_comment):
-    print("hi")
     username, is_admin = authenticate_session()
 
     current_article_comments = no_sql_db.database.search_table_for_entry("knowledge_articles", "title", article_title)[4]

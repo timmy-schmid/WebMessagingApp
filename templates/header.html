@@ -37,7 +37,7 @@
           % if not defined('username') or username is False:
           <button class="main-dropdown__button"></i> Login / New User <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
           <div class="main-dropdown__content">
-            <form class ="form-login" action="/login" method="post">
+            <form id="login_form" class ="form-login" action="/login" method="post">
               <input class="form__field" name="username" type="text" placeholder="Username"/>
               <input class="form__field" name="password" type="password" placeholder="Password"/>
               <button class="form__btn" type="submit">Login</button>
@@ -45,6 +45,7 @@
               <a href="/create_user" class="form__btn">Join Now</a>
             </form>
           </div>
+          <script>generateRSA('login_form')</script>
           % else:
           <button class="main-dropdown__button"></i> Welcome {{username}} <i class="fa-solid fa-angle-down" style=" vertical-align: middle;"></i></button>
           <div class="main-dropdown__content">

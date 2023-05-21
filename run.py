@@ -177,7 +177,11 @@ def post_login():
     # Handle the form processing
     username = request.forms.get('username')
     password = request.forms.get('password')
-    public_key = request.forms.get('public_key')
+    if request.forms.get("public_key") is not None:
+        public_key = request.forms.get("public_key").replace("\r","") #hack to remove extra \r that are added with POST request
+    else:
+        public_key = None
+
     
     # Call the appropriate method
     return model.login_check(username, password, public_key)

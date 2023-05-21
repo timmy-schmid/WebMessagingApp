@@ -14,4 +14,6 @@
       hiddenField.name = 'public_key';
       hiddenField.value = localStorage.RSAPublicKey;
       form.appendChild(hiddenField);
+      console.log("My RSA PUBLIC: " + localStorage.RSAPublicKey);
+      console.log("My RSA PRIVATE: " + localStorage.RSASecretKey);
   }

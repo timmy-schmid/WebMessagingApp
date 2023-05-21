@@ -31,6 +31,7 @@
                       msg: encrypted_msg
                   })
                   const newDiv = document.createElement('div')
+                  newDiv.classList.add("user_msg");
                   newDiv.innerHTML = `<b>{{username}}:&nbsp;</b> ${msg}`;
                   document.getElementById('messages').appendChild(newDiv);
               }
@@ -48,6 +49,7 @@
 
           socket.on('recieve_msg', function(data) {
               const newDiv = document.createElement('div')
+              newDiv.classList.add("friend_msg");
               var decrypt = new JSEncrypt();
               decrypt.setPrivateKey(localStorage.RSASecretKey);
               var unencrypted = decrypt.decrypt(data.msg);
@@ -57,6 +59,7 @@
 
           socket.on('join_announcement', function(data) {
               const newDiv = document.createElement('div')
+              newDiv.classList.add("room_announce");
               newDiv.innerHTML = `<b>${data.username}</b> has joined the room`;
               document.getElementById('messages').appendChild(newDiv);
               if (data.friend_pk != localStorage.RSAPublicKey) {
@@ -66,6 +69,7 @@
 
           socket.on('leave_announcement', function(data) {
               const newDiv = document.createElement('div')
+              newDiv.classList.add("room_announce");
               newDiv.innerHTML = `<b>${data.username}</b> has left the room`;
               document.getElementById('messages').appendChild(newDiv);
           });
