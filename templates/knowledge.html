@@ -29,15 +29,20 @@
         </div>
         <hr>
 
+        
         <h2>Comments:</h2>
         % for comment in comments:
             <p> {{!comment}}</p>
         % end
-        <form action="/knowledge" method="post">
-            <input type="hidden" name="article_title" value="{{article_title}}">
-            <input class="form__field" name="user_comment" placeholder="Post New Comment">
-            <button class="form__btn-mute" name="comment" value="comment" type="submit">Post</button>
-        </form>
+
+        % if defined('muted') and muted is False:
+            <form action="/knowledge" method="post">
+                <input type="hidden" name="article_title" value="{{article_title}}">
+                <input class="form__field" name="user_comment" placeholder="Post New Comment">
+                <button class="form__btn-mute" name="comment" value="comment" type="submit">Post</button>
+            </form>
+        %end
+
         %end
     </article>
 </section>
@@ -46,7 +51,7 @@
 
 % if defined('muted') and muted is True:
 </br>
-<p class="error">You cannot post anything in the knowledge repository because you have been muted by Admin for breaching the repository rules. Please message Admin if you wish to be unmuted.</p>
+<p class="error">You cannot post or comment in the knowledge repository because you have been muted by Admin for breaching the repository rules. Please message Admin if you wish to be unmuted.</p>
 </br>
 %else:
     <form action="/knowledge" method="post">
